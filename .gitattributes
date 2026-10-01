@@ -1,0 +1,9 @@
+# Terminații de rând unitare (LF) pe Windows, macOS și Linux.
+* text=auto eol=lf
+
+# Fișiere binare
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary

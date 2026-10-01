@@ -1,0 +1,41 @@
+# --- Secrete și configurare locală ---
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials*.json
+
+# --- Dependențe ---
+node_modules/
+
+# --- Date locale: baza SQLite, emailuri de dezvoltare, exporturi ---
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+metamorf-date-*.json
+
+# --- Jurnale și fișiere temporare ---
+*.log
+npm-debug.log*
+logs/
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+coverage/
+
+# --- Sistem de operare și editoare ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

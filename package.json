@@ -1,0 +1,16 @@
+{
+  "name": "metamorf",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Metamorf — nutriție și fitness. Server Node.js fără dependențe externe.",
+  "type": "module",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node server/server.js",
+    "dev": "node --watch server/server.js",
+    "migrate": "node server/migrate.js",
+    "test": "node --test \"test/**/*.test.js\""
+  }
+}
