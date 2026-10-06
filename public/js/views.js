@@ -9,9 +9,12 @@ const heading = (title, desc, action = '') => `
 
 const macroLine = e => `${format(e.protein, 1)} g proteine · ${format(e.carbs, 1)} g carbo · ${format(e.fat, 1)} g grăsimi`;
 
+/** Text de buton cu variantă scurtă pentru telefon. */
+const label = (long, short) => `<span class="lbl-long">${long}</span><span class="lbl-short" aria-hidden="true">${short}</span>`;
+
 const mealCover = m => m.image
   ? `<img src="${m.image}" alt="${esc(m.name)}" loading="lazy">`
-  : `<span>${esc(m.tagline)}</span><small>${esc(m.sub)}</small>`;
+  : `<span>${esc(m.tagline)}</span><small>${esc(m.sub)}</small><i class="cover-icon" aria-hidden="true">${icon(m.slotIndex === 0 ? 'sparkles' : 'leaf')}</i>`;
 
 const pageState = (iconName, title, text, action = '') => `
   <div class="page-state">
@@ -33,6 +36,10 @@ function renderNav() {
     <button class="nav-item ${ui.view === key ? 'active' : ''}" data-view="${key}" ${ui.view === key ? 'aria-current="page"' : ''}>
       ${icon(ic)}<span>${name}</span>${key === 'alimentatie' ? '<span class="nav-pill">AI</span>' : ''}
     </button>`).join('');
+
+  const tabs = [['acasa', 'Acasă', 'home'], ['alimentatie', 'Mese', 'leaf'], ['antrenamente', 'Mișcare', 'dumbbell'], ['scanner', 'Jurnal', 'scan'], ['progres', 'Progres', 'chart']];
+  document.getElementById('tabbar').innerHTML = tabs.map(([key, name, ic]) => `
+    <button class="${ui.view === key ? 'active' : ''}" data-view="${key}" ${ui.view === key ? 'aria-current="page"' : ''}>${icon(ic)}<span>${name}</span></button>`).join('');
 
   const crumbs = { chestionar: 'Profilul și preferințele', 'bun-venit': 'Bun venit', resetare: 'Resetarea parolei' };
   document.getElementById('crumb').textContent = crumbs[ui.view] || VIEWS[ui.view]?.[0] || VIEWS.acasa[0];
@@ -202,6 +209,7 @@ function dailyCards() {
 }
 
 function mealFeature() {
+  if (isAccount() && planDay()) return planFeature();
   const key = today();
   const m = planFor(key)[1]; // prânzul zilei (bowl cu somon, când dieta îl permite)
   const logged = slotLogged(key, m.slotIndex);
@@ -222,6 +230,7 @@ function mealFeature() {
 }
 
 function workoutCard() {
+  if (isAccount() && planDay()) return planWorkoutCard();
   const done = getDay().workouts.length > 0;
   return `
   <article class="card workout-card">
@@ -276,13 +285,14 @@ function dashboard() {
     </div>
   </section>
   ${dailyCards()}
+  ${isAccount() ? todayTasksCard() : ''}
   <div class="lower-grid">
     <div>
       <div class="section-label"><h2>În farfuria ta astăzi</h2><button class="text-btn" data-view="alimentatie">Vezi planul alimentar</button></div>
       ${mealFeature()}
     </div>
     <div>
-      <div class="section-label"><h2>Mișcarea de astăzi</h2><span class="tag green">${getDay().workouts.length ? 'Finalizat azi' : 'Ziua 1 · Gratuit'}</span></div>
+      <div class="section-label"><h2>Mișcarea de astăzi</h2><span class="tag green">${getDay().workouts.length ? 'Finalizat azi' : isAccount() && planDay() ? 'Din planul tău' : 'Ziua 1 · Gratuit'}</span></div>
       ${workoutCard()}
     </div>
   </div>
@@ -298,9 +308,9 @@ function dashboard() {
 // ---------- Plan alimentar ----------
 
 function mealButton(key, m) {
-  if (slotLogged(key, m.slotIndex)) return `<button class="btn lime full" disabled>Înregistrată în jurnal</button>`;
-  if (isFuture(key)) return `<button class="btn dark full" disabled>Disponibil în ziua respectivă</button>`;
-  return `<button class="btn dark full" data-action="mealDone" data-date="${key}" data-slot="${m.slotIndex}">Am mâncat această masă</button>`;
+  if (slotLogged(key, m.slotIndex)) return `<button class="btn lime full" disabled>${label('Înregistrată în jurnal', 'În jurnal')}</button>`;
+  if (isFuture(key)) return `<button class="btn dark full" disabled>${label('Disponibil în ziua respectivă', 'Mai târziu')}</button>`;
+  return `<button class="btn dark full" data-action="mealDone" data-date="${key}" data-slot="${m.slotIndex}">${label('Am mâncat această masă', 'Am mâncat')}</button>`;
 }
 
 function aiNotice() {
@@ -321,6 +331,7 @@ function aiNotice() {
 }
 
 function foodPage() {
+  if (isAccount() && db.plan?.plan) return planFoodPage();
   const now = today();
   const key = ui.selectedDate;
   const sel = parseKey(key);
@@ -329,7 +340,7 @@ function foodPage() {
   const diet = db.form.diet || 'Toate tipurile';
   return `
   ${heading(isAccount() ? 'Idei pentru mesele tale' : 'Planul tău alimentar', 'O săptămână de idei pentru mese. Începe cu ce îți place.', `<button class="btn outline" data-view="chestionar">${icon('settings')}Preferințe</button>`)}
-  ${aiNotice()}
+  ${isAccount() ? planSetupCard() : aiNotice()}
   <div class="week-tabs">${[1, 2, 3, 4].map(w => `<button class="week-tab ${w === 1 ? 'active' : ''}" data-action="week" data-week="${w}" ${w === 1 ? 'aria-current="true"' : ''}>${w > 1 ? icon('lock') : icon('calendar')}Săptămâna ${w}${w === 1 ? ' · Gratuit' : ''}</button>`).join('')}</div>
   <div class="day-picker" role="group" aria-label="Alege ziua">${weekDates().map((date, i) => {
     const k = dateKey(date);
@@ -345,8 +356,10 @@ function foodPage() {
         <div class="meal-meta"><span>${icon('fire')}${m.kcal} kcal</span><span>${icon('clock')}${m.min} min</span></div>
         ${m.conflicts.length ? `<p><span class="tag warn">Conține: ${esc(m.conflicts.join(', '))}</span></p>` : ''}
         <p>${macroLine(m)}</p>
-        <button class="btn outline full" data-action="recipe" data-date="${key}" data-slot="${m.slotIndex}">Rețetă & ingrediente</button>
-        ${mealButton(key, m)}
+        <div class="meal-actions">
+          <button class="btn outline full" data-action="recipe" data-date="${key}" data-slot="${m.slotIndex}">${label('Rețetă & ingrediente', 'Rețetă')}</button>
+          ${mealButton(key, m)}
+        </div>
       </div>
     </article>`).join('')}
   </div>
@@ -366,6 +379,7 @@ function foodPage() {
 // ---------- Antrenamente ----------
 
 function workoutPage() {
+  if (isAccount() && db.plan?.plan) return planWorkoutPage();
   const sessions = getDay().workouts;
   const last = sessions.at(-1);
   return `
@@ -518,7 +532,7 @@ function progressPage() {
   const demo = hasDemoWeights();
   const sessions = workoutCount(30);
   return `
-  ${heading('Progresul are mai multe forme.', 'Privește evoluția în timp. Nu doar un număr de pe cântar.', `<button class="btn dark" data-action="addWeight">${icon('plus')}Înregistrează greutatea</button>`)}
+  ${heading('Progresul are mai multe forme.', 'Privește evoluția în timp. Nu doar un număr de pe cântar.', `<button class="btn dark" data-action="addWeight" aria-label="Înregistrează greutatea">${icon('plus')}${label('Înregistrează greutatea', 'Adaugă')}</button>`)}
   <div class="progress-hero">
     <section class="card">
       <span class="metric-label">Greutate înregistrată</span>

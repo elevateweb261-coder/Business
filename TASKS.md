@@ -45,12 +45,21 @@ Legendă: ✅ gata și verificat · 🔄 în lucru · ⏳ planificat · ⛔ bloc
 - ⏳ Stripe în mod test: checkout, webhook verificat prin semnătură, expirare și anulare. ⛔ necesită cont Stripe și chei de test.
 - ⏳ Filtrarea conținutului blocat pe server (săptămânile 2–4, zilele 2+).
 
-## Etapa 4 — Plan alimentar AI (28 de zile) ⏳
-- ⏳ Integrare AI pe server (cheia doar în `.env`), răspuns structurat validat cu schemă.
-- ⏳ Bază nutrițională verificată pentru calculul valorilor (ex. CIQUAL / USDA FoodData Central) — necesită alegerea sursei.
-- ⏳ Verificarea alimentelor excluse, alternative pentru mese, înlocuirea unei mese, porție efectiv consumată.
-- ⏳ Flux separat pentru minori, alergii și condiții medicale (fără plan automat).
-- ⛔ necesită cheie API pentru furnizorul AI.
+## Etapa 4 — Plan personalizat AI (mese + sarcini zilnice) 🔄
+- ✅ Integrare Claude pe server (`@anthropic-ai/sdk`, `claude-opus-5-5`), cheia doar în `.env`; răspuns structurat (schemă JSON), streaming, rezervă automată la refuz.
+- ✅ Catalog de ~75 de alimente (valori la 100 g) și ~34 de exerciții; AI-ul alege doar din cataloage.
+- ✅ Validare pe server: dietă, alimente evitate, structura zilei, exerciții compatibile cu echipamentul, număr de zile de antrenament; caloriile calculate din catalog, porții ajustate spre țintă (±10%), proteine minime; o reîncercare cu feedback; nimic salvat dacă rămâne invalid.
+- ✅ Plan pe săptămână (7 zile), salvat în cont; sarcini zilnice (apă, antrenament, mișcare, cântărire, obiceiuri) bifabile.
+- ✅ Înlocuirea unei mese; porția efectiv consumată (50–150%) în jurnal, fără duplicate.
+- ✅ Gratuit: săptămâna 1 + primul antrenament; Premium: săptămânile următoare și toate antrenamentele — aplicat pe server, conținutul blocat nu e trimis.
+- ✅ Eligibilitate: fără plan automat pentru minori, alergii și limitări; ținte obligatorii.
+- ✅ Limite zilnice (3 planuri, 10 înlocuiri), jurnal de utilizare AI (tokeni, erori).
+- ✅ Generator local de test pentru dezvoltare (etichetat „Plan de test · fără AI”).
+- ✅ Teste: `test/plan.test.js` (9 teste).
+- ⛔ Generare reală cu Claude: necesită `ANTHROPIC_API_KEY` în `.env`.
+- ⏳ Verificarea valorilor din catalogul de alimente cu sursa oficială (USDA / CIQUAL) și revizuirea exercițiilor de un antrenor.
+- ⏳ Săptămânile 2–4 generate automat la începutul fiecărei săptămâni (acum: la cerere, pentru săptămâna curentă sau următoare).
+- ⏳ Lista de cumpărături 💡.
 
 ## Etapa 5 — Antrenamente ⏳
 - ⏳ Catalog de exerciții verificat (fără linkuri video inventate), planuri după obiectiv, experiență, locație, echipament, zile și timp.
@@ -74,5 +83,5 @@ Legendă: ✅ gata și verificat · 🔄 în lucru · ⏳ planificat · ⛔ bloc
 1. **Furnizor email** (SMTP sau serviciu precum Resend/Postmark) pentru resetarea parolei.
 2. **Prețurile** pentru 1, 3 și 6 luni și moneda.
 3. **Cont Stripe** (sau alt procesator) cu chei de test.
-4. **Furnizor AI** și cheia API (recomandat: Claude, prin backend).
+4. **Cheia API Anthropic** în `.env` (integrarea e gata).
 5. **Sursa datelor nutriționale** verificate.

@@ -42,6 +42,11 @@ export function buildConfig(env = process.env, overrides = {}) {
     scryptCost: int(env.SCRYPT_COST, 17), // N = 2^17 (recomandare OWASP)
     trustProxy: env.TRUST_PROXY === 'true',
     publicDir: resolve(ROOT, 'public'),
+    // AI: cheia se citește doar pe server. AI_PROVIDER: auto | anthropic | test | off
+    anthropicKey: env.ANTHROPIC_API_KEY || '',
+    aiProvider: env.AI_PROVIDER || 'auto',
+    aiModel: env.AI_MODEL || 'claude-opus-5-5',
+    aiEffort: env.AI_EFFORT || 'medium',
     ...overrides,
   };
   if (config.isProd && !env.APP_URL) throw new Error('APP_URL este obligatoriu în producție.');

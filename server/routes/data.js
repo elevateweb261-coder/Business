@@ -288,10 +288,13 @@ export function registerDataRoutes(router, app) {
       water: all('SELECT day, ml FROM water_days WHERE user_id = ? ORDER BY day', r => ({ ...r })),
       workouts: all('SELECT * FROM workout_sessions WHERE user_id = ? ORDER BY day', workoutOut),
       weights: all('SELECT * FROM weights WHERE user_id = ? ORDER BY measured_at', weightOut),
+      plans: all('SELECT week_start, week_index, source, model, created_at FROM plans WHERE user_id = ? ORDER BY week_start', r => ({ ...r })),
+      planDays: all('SELECT day, data_json FROM plan_days WHERE user_id = ? ORDER BY day', r => ({ day: r.day, ...JSON.parse(r.data_json) })),
+      planTasksDone: all('SELECT day, task_id, done_at FROM plan_task_done WHERE user_id = ? ORDER BY day', r => ({ ...r })),
     };
     ctx.headers['Content-Disposition'] = `attachment; filename="metamorf-date-${todayIn(ctx.user.timezone)}.json"`;
     return data;
   });
 }
 
-export { targetsOut };
+export { targetsOut, foodOut };

@@ -6,10 +6,12 @@ import { todayIn } from './validate.js';
 import { createMailer } from './mailer.js';
 import { registerAuthRoutes } from './routes/auth.js';
 import { registerDataRoutes, profileOut, targetsOut } from './routes/data.js';
+import { registerPlanRoutes } from './routes/plan.js';
+import { createPlanService } from './plan/service.js';
 
 const SESSION_COOKIE = 'mm_sid';
 
-export function createApp(config, { db, mailer = createMailer(config) }) {
+export function createApp(config, { db, mailer = createMailer(config), aiProvider }) {
   const router = new Router();
   const app = {
     db, config, mailer, router,
@@ -47,8 +49,11 @@ export function createApp(config, { db, mailer = createMailer(config) }) {
     },
   };
 
+  app.plans = createPlanService({ db, config, ...(aiProvider !== undefined ? { provider: aiProvider } : {}) });
+
   registerAuthRoutes(router, app);
   registerDataRoutes(router, app);
+  registerPlanRoutes(router, app);
 
   function currentSession(req) {
     const token = parseCookies(req.headers.cookie)[SESSION_COOKIE];

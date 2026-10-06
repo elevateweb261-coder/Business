@@ -2,13 +2,16 @@
 
 Aplicație web pentru nutriție și fitness: jurnal alimentar, hidratare, antrenamente, greutate și progres, cu conturi reale. Planurile AI și plățile sunt în lucru (vezi [TASKS.md](TASKS.md)).
 
+Viziunea completă, cu toate funcțiile aplicației finale: [VISION.md](VISION.md).
+
 ## Rulare locală (Windows, macOS, Linux)
 
-Cerință: **Node.js 22.13 sau mai nou** (recomandat 24). Nu este nevoie de `npm install`: proiectul nu are dependențe externe.
+Cerință: **Node.js 22.13 sau mai nou** (recomandat 24).
 
 ```bash
 # 1. Configurare (o singură dată)
 copy .env.example .env        # Windows (pe macOS/Linux: cp .env.example .env)
+npm install                   # o singură dependență: SDK-ul oficial Anthropic, pentru planurile AI
 
 # 2. Pornire
 npm start                     # sau: npm run dev (repornește la modificări)
@@ -18,13 +21,23 @@ Deschide **http://localhost:3000**. Baza de date se creează automat în `data/m
 
 **Recuperarea parolei în dezvoltare:** emailurile nu sunt trimise încă. Linkul de resetare apare în consola serverului și în `data/outbox/`.
 
-**Teste:** `npm test` (autentificare, izolarea datelor, duplicate, CSRF, export, ștergere).
+**Teste:** `npm test` — API (autentificare, izolarea datelor, duplicate, CSRF, export, ștergere) și planuri (eligibilitate, dietă și alimente evitate, calorii, gratuit/Premium, porții, reîncercarea la răspunsuri AI invalide, limite). Testele nu fac apeluri reale la AI.
+
+## Planul personalizat (AI)
+
+1. Creează o cheie pe [console.anthropic.com](https://console.anthropic.com) → API Keys și setează o limită lunară de cheltuieli.
+2. Pune cheia în `.env`, pe rândul `ANTHROPIC_API_KEY=` (doar acolo — niciodată în chat, cod sau git) și repornește serverul.
+3. În aplicație: chestionar complet + ținte zilnice → Plan alimentar → **Generează planul**.
+
+Fără cheie, în dezvoltare, planul este generat local de un **generator de test** (fără AI), etichetat „Plan de test · fără AI”. În producție, fără cheie, aplicația afișează un mesaj clar.
+
+Cum funcționează: serverul trimite profilul, preferințele și țintele către Claude (`claude-opus-5-5`, răspuns structurat după schemă JSON). Modelul alege **doar** alimente și exerciții din cataloagele din `server/plan/`, cu gramaje, serii și repetări. Serverul **calculează caloriile din catalog**, ajustează porțiile spre țintă și respinge planul dacă încalcă dieta, alimentele evitate sau țintele (cu o reîncercare). Minorii, alergiile și limitările fizice nu primesc plan automat.
 
 **Fără server:** `public/index.html` deschis direct în browser pornește doar **modul demo** (date exemplu, salvate în browser).
 
 ## Arhitectură — de ce așa
 
-- **Node.js fără dependențe** (`node:http`, `node:sqlite`, `node:crypto`). Pornește oriunde există Node, fără compilatoare pe Windows și fără pachete de actualizat. Codul e mic și ușor de citit.
+- **Node.js aproape fără dependențe** (`node:http`, `node:sqlite`, `node:crypto`); singura dependență este SDK-ul oficial Anthropic, încărcat doar când se generează un plan. Pornește oriunde există Node, fără compilatoare pe Windows.
 - **SQLite**, un singur fișier. Este potrivit pentru lansare și pentru primii mii de utilizatori. Migrațiile SQL sunt simple (`server/migrations`). Dacă va fi nevoie, schema se poate muta pe PostgreSQL fără schimbări în frontend.
 - **Frontendul rămâne HTML/CSS/JS fără compilare**, servit de același server. Așa, cookie-urile de sesiune funcționează fără CORS.
 - **Securitate:**
@@ -46,6 +59,8 @@ server/
   app.js                sesiuni, CSRF, rutare
   routes/auth.js        cont: înregistrare, conectare, resetare, parolă, ștergere
   routes/data.js        profil, ținte, jurnal, apă, antrenamente, greutate, export
+  routes/plan.js        plan: generare, citire (gratuit/Premium), înlocuire masă, porție, sarcini
+  plan/                 cataloage (alimente, exerciții), generatori (Claude / test), validare, serviciu
   migrations/           schema bazei de date
 test/api.test.js        teste API
 .env.example            variabile de mediu (fără secrete)
@@ -58,4 +73,4 @@ test/api.test.js        teste API
 
 ## Ce nu este încă real
 
-Generarea planului AI, catalogul verificat de exerciții, codul de bare, analiza foto și plățile. Toate sunt marcate clar în interfață. Detalii și informațiile necesare de la proprietară se găsesc în [TASKS.md](TASKS.md).
+Codul de bare, analiza foto și plățile. Valorile din catalogul de alimente și instrucțiunile exercițiilor trebuie verificate cu sursele oficiale / un antrenor înainte de lansare. Toate sunt marcate clar în interfață. Detalii și informațiile necesare de la proprietară se găsesc în [TASKS.md](TASKS.md).

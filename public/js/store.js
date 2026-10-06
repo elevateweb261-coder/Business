@@ -156,6 +156,7 @@ async function enterAccount(me) {
   applyMe(me);
   ui.scanMode = 'manual';
   await loadAccountData();
+  await loadPlan();
 }
 
 async function loadAccountData() {
@@ -359,7 +360,10 @@ function clearDemoWeights() {
 }
 
 async function saveTargets(t) {
-  if (isAccount()) db.targets = t ? (await API.put('/api/targets', t)).targets : (await API.del('/api/targets')).targets;
+  if (isAccount()) {
+    db.targets = t ? (await API.put('/api/targets', t)).targets : (await API.del('/api/targets')).targets;
+    await loadPlan(); // țintele pot debloca generarea planului
+  }
   else { db.targets = t || { ...DEFAULT_TARGETS }; save(); }
 }
 
@@ -367,6 +371,7 @@ async function saveTargets(t) {
 async function saveProfile(fields) {
   if (isAccount()) {
     applyMe(await API.put('/api/profile', { ...fields, timezone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
+    if (fields.done || fields.healthConsent !== undefined) await loadPlan(); // eligibilitatea se poate schimba
     return;
   }
   const next = { ...db.form, ...fields };
@@ -394,6 +399,52 @@ async function yearActivity(year) {
   }
   for (const [key, d] of Object.entries(db.days)) if (key.startsWith(`${year}-`)) out[key] = summary(d);
   return out;
+}
+
+// ---------- Plan personalizat (doar în cont) ----------
+
+const currentMonday = () => dateKey(weekDates()[0]);
+
+/** Planul săptămânii curente, cu regulile gratuit/Premium aplicate pe server. Eșecul nu blochează aplicația. */
+async function loadPlan() {
+  if (!isAccount()) { db.plan = null; return; }
+  try {
+    db.plan = await API.get(`/api/plan?week=${currentMonday()}`);
+    ui.planError = null;
+  } catch (err) {
+    db.plan = null;
+    ui.planError = err.message;
+  }
+}
+
+const planDay = (key = today()) => db.plan?.plan?.days.find(d => d.date === key) || null;
+const planMeal = (key, slot) => planDay(key)?.meals.find(m => m.slot === slot) || null;
+
+async function generatePlan(force = false) {
+  db.plan = await API.post('/api/plan/generate', { week: currentMonday(), force });
+}
+
+async function replacePlanMeal(key, slot) {
+  const { meal } = await API.post('/api/plan/replace', { day: key, slot });
+  const day = planDay(key);
+  day.meals = day.meals.map(m => (m.slot === slot ? meal : m));
+  day.nutrition = day.meals.reduce((t, m) => ({
+    kcal: t.kcal + m.nutrition.kcal, protein: t.protein + m.nutrition.protein, carbs: t.carbs + m.nutrition.carbs, fat: t.fat + m.nutrition.fat,
+  }), { kcal: 0, protein: 0, carbs: 0, fat: 0 });
+  return meal;
+}
+
+/** Înregistrează porția consumată dintr-o masă din plan (calculată pe server). */
+async function logPlanPortion(key, slot, portion) {
+  const entry = await API.post('/api/plan/log', { day: key, slot, portion });
+  ensureDay(key).log.push(foodFromServer(entry));
+  session.counts.food++;
+}
+
+async function setPlanTask(key, taskId, done) {
+  await API.put('/api/plan/tasks', { day: key, taskId, done });
+  const task = planDay(key)?.tasks.find(t => t.id === taskId);
+  if (task) task.done = done;
 }
 
 const sortedWeights = () => [...db.weights].sort((a, b) => `${a.date}T${a.time}`.localeCompare(`${b.date}T${b.time}`));

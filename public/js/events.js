@@ -366,7 +366,7 @@ document.addEventListener('visibilitychange', async () => {
   if (document.visibilityState !== 'visible' || document.getElementById('dialog').open) return;
   if (today() !== renderedDay) { renderedDay = today(); ui.selectedDate = today(); }
   if (isAccount()) {
-    try { await loadAccountData(); } catch { return; }
+    try { await loadAccountData(); await loadPlan(); } catch { return; }
   }
   if (session.mode !== 'guest' && !document.querySelector('#content form')) refresh();
 });

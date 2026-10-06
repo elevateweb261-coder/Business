@@ -12,5 +12,8 @@
     "dev": "node --watch server/server.js",
     "migrate": "node server/migrate.js",
     "test": "node --test \"test/**/*.test.js\""
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0"
   }
 }

@@ -3472,3 +3472,899 @@ dialog.wide {
 .card.meal-card {
   padding: 0;
 }
+
+/* ========== Telefon: aspect compact (≤ 700 px) ========== */
+.tabbar,
+.lbl-short {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  :root {
+    --radius: 16px;
+  }
+
+  /* Etichete scurte pe butoane */
+  .lbl-long {
+    display: none;
+  }
+  .lbl-short {
+    display: inline;
+  }
+
+  /* Bara de navigare de jos */
+  .tabbar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 15;
+    background: #0c0e0c;
+    border-top: 1px solid #20251f;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+  }
+  .tabbar button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 0;
+    border-radius: 10px;
+    color: #a9b1a3;
+    font-size: 10.5px;
+    font-weight: 600;
+  }
+  .tabbar button svg {
+    width: 21px;
+    height: 21px;
+  }
+  .tabbar button.active {
+    color: #e8cc7c;
+    background: #1d231b;
+  }
+  .mode-guest .tabbar {
+    display: none;
+  }
+  .main-shell {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom));
+  }
+  .mode-guest .main-shell {
+    padding-bottom: 0;
+  }
+  #toast {
+    bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+
+  /* Cadru general */
+  .topbar {
+    height: 56px;
+    padding: 0 14px;
+  }
+  main {
+    padding: 14px 14px 18px;
+  }
+  .card {
+    padding: 15px;
+  }
+  .card-heading {
+    margin-bottom: 10px;
+  }
+  .card-heading h3 {
+    font-size: 14px;
+  }
+  .page-heading {
+    margin-bottom: 14px;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .page-heading .eyebrow {
+    display: none;
+  }
+  .page-heading h1 {
+    font-size: 22px;
+    letter-spacing: -.6px;
+    margin: 0 0 3px;
+  }
+  .page-heading p {
+    font-size: 12.5px;
+  }
+  .page-heading > .btn {
+    padding: 8px 10px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  .section-label {
+    margin: 18px 0 10px;
+  }
+  .section-label h2 {
+    font-size: 16px;
+  }
+  .section-label .text-btn {
+    font-size: 12px;
+  }
+  .info-strip {
+    margin-top: 12px;
+    padding: 10px 12px;
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+  .notice-card {
+    padding: 11px 13px;
+    margin-bottom: 12px;
+    font-size: 12.5px;
+    gap: 10px;
+  }
+  .notice-card p {
+    font-size: 11.5px;
+  }
+  .main-footer {
+    padding: 0 14px 14px;
+    font-size: 9.5px;
+  }
+
+  /* Banner verde */
+  .hero {
+    min-height: 0;
+    padding: 18px;
+    margin-bottom: 12px;
+  }
+  .hero h2 {
+    font-size: 19px;
+    line-height: 1.3;
+    margin: 6px 0 4px;
+  }
+  .hero p {
+    font-size: 11.5px;
+    margin-bottom: 12px;
+  }
+  .hero .btn {
+    font-size: 12.5px;
+    padding: 8px 13px;
+  }
+  .hero-tag {
+    font-size: 9.5px;
+  }
+
+  /* Primii pași */
+  .first-steps {
+    margin-bottom: 12px;
+  }
+  .steps-list {
+    gap: 6px;
+  }
+  .steps-list li {
+    padding: 9px 11px;
+    gap: 10px;
+    border-radius: 12px;
+  }
+  .steps-list strong {
+    font-size: 13px;
+  }
+  .steps-list small {
+    font-size: 11px;
+  }
+  .step-num {
+    width: 26px;
+    height: 26px;
+    font-size: 12px;
+  }
+  .steps-list .btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  /* Panou: calorii pe toată lățimea, macro + apă alături */
+  .dashboard-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .dashboard-top > .card:first-child {
+    grid-column: 1 / -1;
+  }
+  .calorie-layout {
+    gap: 18px;
+  }
+  .ring {
+    width: 92px;
+    height: 92px;
+    flex-basis: 92px;
+  }
+  .ring-label strong {
+    font-size: 22px;
+  }
+  .ring-label small {
+    font-size: 10px;
+  }
+  .calorie-side {
+    gap: 8px;
+  }
+  .metric-number {
+    font-size: 16px;
+  }
+  .card-foot {
+    margin-top: 10px;
+    padding-top: 9px;
+    font-size: 10.5px;
+  }
+  .macro {
+    margin-bottom: 9px;
+  }
+  .macro-head {
+    font-size: 11.5px;
+    margin-bottom: 4px;
+  }
+  .macro-head small {
+    font-size: 10px;
+  }
+  .water-count {
+    font-size: 22px;
+  }
+  .water-count small {
+    font-size: 11px;
+  }
+  .water-glasses {
+    gap: 2px;
+    margin: 8px 0 10px;
+  }
+  .water-glasses svg {
+    width: 15px;
+    height: 18px;
+  }
+  .water-add > span {
+    display: none;
+  }
+  .water-add .water-buttons {
+    width: 100%;
+  }
+  .water-add .water-buttons button {
+    flex: 1;
+    justify-content: center;
+    padding: 7px 6px;
+    font-size: 12px;
+  }
+  .water-add .water-buttons button:first-child {
+    flex: 0 0 34px;
+  }
+  .big-number {
+    font-size: 26px;
+  }
+  .empty-inline {
+    margin-top: 10px;
+    padding-top: 10px;
+    font-size: 12px;
+  }
+
+  /* Masa următoare și antrenamentul zilei */
+  .meal-feature .meal-photo {
+    height: 150px;
+  }
+  .meal-feature .meal-card-top {
+    min-height: 150px;
+  }
+  .meal-copy {
+    padding: 13px 15px 15px;
+  }
+  .meal-copy h3 {
+    font-size: 17px;
+    margin: 4px 0 5px;
+  }
+  .meal-macros {
+    margin: 6px 0 10px;
+    font-size: 11.5px;
+  }
+  .meal-copy .btn,
+  .workout-actions .btn {
+    font-size: 12.5px;
+    padding: 8px 12px;
+  }
+  .workout-card {
+    min-height: 0;
+    padding: 15px;
+  }
+  .workout-top .workout-symbol {
+    width: 36px;
+    height: 36px;
+  }
+  .workout-card h3 {
+    font-size: 17px;
+    margin: 10px 0 3px;
+  }
+  .workout-card p,
+  .workout-actions span {
+    font-size: 12px;
+  }
+  .workout-actions {
+    padding-top: 10px;
+  }
+
+  /* Ritmul săptămânii și scannerul mic */
+  .bottom-grid {
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .weekly-chart {
+    height: 70px;
+    gap: 6px;
+  }
+  .chart-column {
+    height: 48px;
+  }
+  .scanner-mini .scan-icon {
+    flex: 0 0 44px;
+    height: 44px;
+    border-radius: 12px;
+  }
+  .scanner-mini h3 {
+    font-size: 14px;
+  }
+  .scan-small {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+  .scan-small .btn {
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+
+  /* Plan alimentar: file pe un singur rând, zile compacte */
+  .week-tabs {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    margin: 10px -14px;
+    padding: 0 14px 2px;
+    scrollbar-width: none;
+  }
+  .week-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .week-tab {
+    flex-shrink: 0;
+    padding: 7px 11px;
+    font-size: 12px;
+    border-radius: 9px;
+  }
+  .day-picker {
+    gap: 4px;
+    margin: 8px 0 12px;
+  }
+  .day-btn {
+    padding: 6px 0;
+    font-size: 9.5px;
+    border-radius: 10px;
+  }
+  .day-btn strong {
+    font-size: 16px;
+    margin: 1px 0;
+  }
+
+  /* Carduri de mese: imagine în stânga, text în dreapta */
+  .meal-list {
+    gap: 10px;
+  }
+  .card.meal-card {
+    display: grid;
+    grid-template-columns: 108px 1fr;
+  }
+  .meal-card .meal-card-top {
+    height: auto;
+    min-height: 100%;
+    padding: 0;
+  }
+  .meal-card .meal-card-top > span:not(.photo-label),
+  .meal-card .meal-card-top > small {
+    display: none;
+  }
+  .meal-card .photo-label {
+    top: 8px;
+    left: 8px;
+    font-size: 9.5px;
+    padding: 3px 6px;
+  }
+  .meal-card-body {
+    padding: 11px 12px 12px;
+    min-width: 0;
+  }
+  .meal-card-body .eyebrow {
+    font-size: 9px;
+    letter-spacing: 1.2px;
+  }
+  .meal-card-body h3 {
+    font-size: 14.5px;
+    line-height: 1.3;
+    margin: 3px 0 4px;
+  }
+  .meal-card-body .meal-meta {
+    font-size: 11px;
+    gap: 8px;
+  }
+  .meal-card-body p {
+    font-size: 11px;
+    margin: 4px 0 0;
+  }
+  .meal-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 9px;
+  }
+  .meal-actions .btn {
+    margin: 0;
+    width: auto;
+    flex: 1;
+    padding: 7px 8px;
+    font-size: 12px;
+  }
+
+  /* Antrenamente */
+  .two-col {
+    gap: 10px;
+  }
+  .exercise-list {
+    gap: 0;
+  }
+  .exercise {
+    padding: 9px 0;
+    gap: 11px;
+  }
+  .exercise-num {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+    border-radius: 9px;
+  }
+  .exercise h3 {
+    font-size: 14px;
+    margin: 0 0 1px;
+  }
+  .exercise p {
+    font-size: 11.5px;
+  }
+  .workout-overview {
+    padding: 17px;
+  }
+  .workout-overview h2 {
+    font-size: 20px;
+    margin: 8px 0 4px;
+  }
+  .workout-overview p {
+    font-size: 12.5px;
+  }
+  .workout-stats {
+    margin: 12px 0 14px;
+    gap: 22px;
+  }
+  .workout-stats strong {
+    font-size: 19px;
+  }
+
+  /* Scanner și jurnal */
+  .scan-modes {
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+  }
+  .scan-modes button {
+    padding: 7px 10px;
+    font-size: 12.5px;
+  }
+  .scanner-zone {
+    min-height: 170px;
+    padding: 16px;
+    gap: 8px;
+  }
+  .field {
+    margin-bottom: 11px;
+    font-size: 13px;
+    gap: 5px;
+  }
+  .field input,
+  .field select {
+    padding: 10px 11px;
+  }
+  .food-log {
+    padding: 9px 0;
+  }
+  .food-log h4 {
+    font-size: 13px;
+  }
+  .food-log small {
+    font-size: 11px;
+  }
+  .food-log strong {
+    font-size: 13px;
+  }
+  .empty-log {
+    padding: 16px 6px;
+    font-size: 13px;
+  }
+
+  /* Progres: trei indicatori pe un rând */
+  .progress-hero {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .progress-hero .card {
+    min-width: 0;
+    padding: 11px;
+  }
+  .progress-hero .card:last-child {
+    flex-basis: auto;
+  }
+  .progress-hero .metric-label {
+    font-size: 10px;
+    line-height: 1.3;
+  }
+  .large-metric {
+    font-size: 20px;
+    margin: 4px 0;
+  }
+  .large-metric small {
+    font-size: 11px;
+  }
+  .progress-hero .tag {
+    font-size: 9px;
+    padding: 3px 5px;
+    display: inline-block;
+  }
+  .line-chart {
+    height: 150px;
+  }
+
+  /* Abonamente */
+  .price-grid {
+    gap: 20px;
+    margin-top: 16px;
+  }
+  .price-card {
+    padding: 18px;
+  }
+  .price-card h2 {
+    font-size: 20px;
+    margin: 6px 0 2px;
+  }
+  .price-card .price {
+    font-size: 21px;
+  }
+  .price-card ul {
+    margin: 12px 0;
+  }
+  .price-card li {
+    font-size: 12.5px;
+    margin: 7px 0;
+  }
+
+  /* Chestionar */
+  .form-card {
+    padding: 18px;
+  }
+  .form-card h2 {
+    font-size: 20px;
+  }
+  .form-card > p {
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+  .step-trail {
+    margin-bottom: 14px;
+  }
+  .choice {
+    padding: 12px;
+  }
+  .form-actions {
+    margin-top: 18px;
+  }
+
+  /* Dialoguri */
+  dialog {
+    padding: 18px;
+    max-height: 90vh;
+  }
+  dialog h2 {
+    font-size: 21px;
+    margin: 4px 0 10px;
+  }
+  dialog p,
+  dialog li {
+    font-size: 13.5px;
+    line-height: 1.6;
+  }
+  .recipe-facts {
+    padding: 12px 0;
+    margin: 12px 0;
+  }
+}
+
+/* Pictograma mesei fără fotografie (vizibilă doar în cardurile compacte de pe telefon) */
+.cover-icon {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .meal-card .meal-card-top .cover-icon {
+    display: grid;
+    place-items: center;
+    position: absolute;
+    inset: 0;
+    color: #e8cc7c;
+    opacity: .85;
+  }
+  .meal-card .meal-card-top .cover-icon svg {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Antrenamente: butonul de start înaintea listei de exerciții */
+  .two-col > .workout-overview {
+    order: -1;
+  }
+  .two-col {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+/* ========== Planul personalizat: invitație, totaluri, sarcini, porții ========== */
+.plan-cta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 20px;
+  border-color: #e6d6a2;
+  background: linear-gradient(135deg, #fffdf6, #f8f3e2);
+}
+
+.plan-cta h3 {
+  font-family: Manrope, sans-serif;
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+
+.plan-cta p {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.plan-cta > div {
+  flex: 1;
+}
+
+.plan-cta-icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border-radius: 14px;
+  background: #0c0e0c;
+  color: #e8cc7c;
+  display: grid;
+  place-items: center;
+}
+
+.plan-cta .btn {
+  flex-shrink: 0;
+}
+
+.small-note {
+  font-size: 12px !important;
+  color: var(--muted);
+  margin-top: 6px !important;
+}
+
+.plan-totals {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.plan-totals > div {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+}
+
+.plan-totals strong {
+  display: block;
+  font-family: Manrope, sans-serif;
+  font-size: 19px;
+}
+
+.plan-totals small {
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.plan-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6f5a24;
+  font-size: 13.5px;
+  margin: 16px 0 0;
+}
+
+.plan-note svg {
+  width: 16px;
+  height: 16px;
+  color: #d6b75f;
+}
+
+/* Lista de sarcini */
+.tasks-card {
+  margin-top: 18px;
+}
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.task:last-child {
+  border-bottom: 0;
+}
+
+.task-check {
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  border: 2px solid #c9d3c4;
+  display: grid;
+  place-items: center;
+  color: var(--green);
+  background: white;
+}
+
+.task-check svg {
+  width: 15px;
+  height: 15px;
+}
+
+.task.done .task-check {
+  background: #e8cc7c;
+  border-color: #e8cc7c;
+}
+
+.task.locked .task-check {
+  border-style: dashed;
+  color: #a9b1a3;
+}
+
+.task-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #f1f4ee;
+  color: #4f6b3f;
+  display: grid;
+  place-items: center;
+}
+
+.task-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+.task-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.task-text strong {
+  display: block;
+  font-size: 14px;
+}
+
+.task-text small {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.task.done .task-text strong {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+/* Rețeta: ingrediente cu gramaje */
+.ingredient-list {
+  list-style: none;
+  padding: 0;
+}
+
+.ingredient-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px dashed var(--line);
+  padding: 6px 0;
+}
+
+dialog ol {
+  padding-left: 20px;
+}
+
+/* Alegerea porției */
+.portion-grid {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.choice.portion {
+  padding: 12px;
+}
+
+.choice.portion strong {
+  margin-top: 6px;
+}
+
+@media (max-width: 700px) {
+  .plan-cta {
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .plan-cta .btn {
+    width: 100%;
+  }
+  .plan-cta-icon {
+    width: 40px;
+    height: 40px;
+  }
+  .plan-totals {
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .plan-totals > div {
+    padding: 8px 9px;
+    border-radius: 11px;
+  }
+  .plan-totals strong {
+    font-size: 15px;
+  }
+  .plan-totals small {
+    font-size: 10px;
+  }
+  .tasks-card {
+    margin-top: 10px;
+  }
+  .task {
+    gap: 9px;
+    padding: 9px 0;
+  }
+  .task-icon {
+    display: none;
+  }
+  .task-text strong {
+    font-size: 13px;
+  }
+  .task-text small {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Cardul „masa următoare”: imaginea pe toată lățimea */
+  .card.meal-feature {
+    padding: 0;
+  }
+}
