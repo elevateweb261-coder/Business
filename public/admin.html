@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c0e0c">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Metamorf — Administrare</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%230c0e0c'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial' font-size='23' font-weight='bold' fill='%23e8cc7c'%3EM%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script src="js/utils.js" defer></script>
+  <script src="js/icons.js" defer></script>
+  <script src="js/exercise-view.js" defer></script>
+  <script src="js/forms.js" defer></script>
+  <script src="js/admin.js" defer></script>
+  <script src="js/admin-content.js" defer></script>
+  <script src="js/admin-library.js" defer></script>
+  <script src="js/admin-system.js" defer></script>
+</head>
+<body class="admin">
+  <a class="skip" href="#content">Mergi la conținut</a>
+
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="/" aria-label="Metamorf, aplicația">
+        <img src="metamorf-logo.png" alt="metamorf" width="525" height="137">
+      </a>
+      <div class="workspace-label">PANOU DE ADMINISTRARE</div>
+      <nav aria-label="Secțiuni administrare" id="nav"></nav>
+      <div class="sidebar-bottom">
+        <div class="profile" style="cursor:default">
+          <span class="avatar" aria-hidden="true">A</span>
+          <span><strong id="admin-name">Administrator</strong><small id="admin-email"></small></span>
+        </div>
+        <div class="sidebar-links"><a href="/">Înapoi la aplicație</a><span>·</span><button data-action="logout">Deconectare</button></div>
+      </div>
+    </aside>
+
+    <div class="main-shell">
+      <header class="topbar">
+        <div class="top-left">
+          <button class="icon-button menu-button" data-action="menu" aria-label="Deschide meniul" aria-expanded="false"><span data-icon="menu"></span></button>
+          <span class="breadcrumb"><span class="crumb-root">Administrare <span>/</span> </span><strong id="crumb">Prezentare generală</strong></span>
+        </div>
+        <div class="top-actions">
+          <span class="demo-badge admin-badge">Acces administrator</span>
+        </div>
+      </header>
+
+      <main id="content" tabindex="-1">
+        <div class="page-state" role="status"><span class="spinner big" aria-hidden="true"></span><p>Se încarcă panoul…</p></div>
+      </main>
+
+      <footer class="main-footer">
+        <span>© <span id="year">2026</span> Metamorf · Administrare</span>
+        <span>Acțiunile din acest panou sunt înregistrate în jurnalul de audit.</span>
+      </footer>
+    </div>
+  </div>
+
+  <div class="mobile-shade" data-action="menu"></div>
+
+  <dialog id="dialog" aria-labelledby="dialog-title">
+    <div class="dialog-head">
+      <span class="eyebrow">ADMINISTRARE</span>
+      <button class="icon-button" data-action="close" aria-label="Închide"><span data-icon="close"></span></button>
+    </div>
+    <div id="dialog-body"></div>
+  </dialog>
+
+  <div id="chart-tip" class="chart-tip" role="tooltip" hidden></div>
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

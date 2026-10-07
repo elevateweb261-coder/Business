@@ -27,7 +27,8 @@ async function logPlanMeal(key, slot) {
 }
 
 function useDemoScan(kind) {
-  if (!scansLeft()) return lockedDialog('Scanarea demo de azi a fost folosită.');
+  if (!appSettings.features.photoScan) return toast('Scanarea este oprită temporar. Adaugă masa manual.');
+  if (!scansLeft()) return lockedDialog('Scanările demo de azi au fost folosite.');
   ensureDay().scans++;
   save();
   ui.scanResult = { ...DEMO_SCAN[kind] };

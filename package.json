@@ -11,9 +11,11 @@
     "start": "node server/server.js",
     "dev": "node --watch server/server.js",
     "migrate": "node server/migrate.js",
+    "admin": "node server/admin-cli.js",
     "test": "node --test \"test/**/*.test.js\""
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.131.0"
+    "@anthropic-ai/sdk": "^0.131.0",
+    "qrcode": "^1.5.4"
   }
 }

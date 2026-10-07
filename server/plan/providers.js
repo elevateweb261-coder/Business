@@ -2,7 +2,7 @@
 //  - `anthropic`: Claude, prin SDK-ul oficial (@anthropic-ai/sdk). Cheia API e citită doar pe server, din .env.
 //  - `test`: generator local, determinist, fără AI — doar pentru dezvoltare. Planurile lui sunt marcate „de test”.
 // Ambii întorc aceeași structură brută (vezi `weekSchema`), validată apoi de `validate.js`.
-import { FOODS, FOOD_SOURCE, foodsForDiet, FOOD_BY_ID } from './foods.js';
+import { FOODS, foodsForDiet, FOOD_BY_ID } from './foods.js';
 import { EXERCISES, exercisesFor } from './exercises.js';
 import { avoidTerms, normalize, nutritionOf, SLOTS, TASK_TYPES } from './validate.js';
 
@@ -110,7 +110,9 @@ export function mealOnlySchema(profile) {
 // ---------- Prompt ----------
 
 // Partea stabilă (cache-uită): rolul, regulile și cataloagele complete. Nu conține date ale utilizatorului.
-const SYSTEM_PROMPT = `Ești planificatorul de nutriție și mișcare al aplicației Metamorf. Creezi planuri practice, gustoase și realiste pentru adulți sănătoși din România, în limba română, cu diacritice.
+// Construit la fiecare cerere din catalogul activ (editabil din panou); identic între cereri cât timp catalogul
+// nu se schimbă, deci rămâne compatibil cu prompt caching.
+const systemPrompt = () => `Ești planificatorul de nutriție și mișcare al aplicației Metamorf. Creezi planuri practice, gustoase și realiste pentru adulți sănătoși din România, în limba română, cu diacritice.
 
 Reguli pentru mese:
 - Fiecare zi are exact un mic dejun, un prânz și o cină; o gustare doar dacă ajută la atingerea țintelor.
@@ -130,11 +132,11 @@ Reguli pentru sarcinile zilnice:
 
 Siguranță: nu oferi sfaturi medicale, nu promite rezultate, nu folosi un limbaj care culpabilizează.
 
-Catalogul de alimente (id: nume — kcal / proteine / carbohidrați / grăsimi la 100 g; sursa: ${FOOD_SOURCE}):
+Catalogul de alimente (id: nume — kcal / proteine / carbohidrați / grăsimi la 100 g; surse: USDA, CIQUAL, Open Food Facts sau introduse manual de echipă):
 ${FOODS.map(f => `${f.id}: ${f.name} — ${f.kcal} / ${f.protein} / ${f.carbs} / ${f.fat}`).join('\n')}
 
-Catalogul de exerciții (id: nume — grupă, echipament, mod):
-${EXERCISES.map(e => `${e.id}: ${e.name} — ${e.group}, ${e.equipment}, ${e.mode === 'reps' ? 'repetări' : 'secunde'}`).join('\n')}`;
+Catalogul de exerciții (id: nume — grupe musculare, echipament, mod, recomandare dacă există):
+${EXERCISES.map(e => `${e.id}: ${e.name} — ${e.muscles.join(' / ')}, ${e.equipment.join(' + ')}, ${e.mode === 'reps' ? 'repetări' : 'secunde'}${e.sets ? `, recomandat ${e.sets} × ${e.mode === 'reps' ? e.reps : `${e.seconds} s`}, pauză ${e.restSec} s` : ''}`).join('\n')}`;
 
 function profileForPrompt(p, targets) {
   return {
@@ -189,7 +191,7 @@ export function anthropicProvider(config) {
         betas: ['server-side-fallback-2026-07-01'],
         fallbacks: 'default', // dacă modelul refuză cererea, serverul Anthropic o reia pe modelul de rezervă recomandat
         output_config: { effort: config.aiEffort, format: { type: 'json_schema', schema } },
-        system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
+        system: [{ type: 'text', text: systemPrompt(), cache_control: { type: 'ephemeral' } }],
         messages,
       });
       message = await stream.finalMessage();

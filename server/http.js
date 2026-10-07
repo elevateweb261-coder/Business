@@ -26,7 +26,8 @@ export class Router {
   on(method, pattern, handler, opts = {}) {
     const keys = [];
     const regex = new RegExp('^' + pattern.replace(/:(\w+)/g, (_, k) => { keys.push(k); return '([^/]+)'; }) + '/?$');
-    this.routes.push({ method, regex, keys, handler, auth: opts.auth !== false });
+    // `raw: true` = corpul cererii e binar (de ex. o imagine), citit ca Buffer de cel mult `maxBytes`.
+    this.routes.push({ method, regex, keys, handler, auth: opts.auth !== false, raw: !!opts.raw, maxBytes: opts.maxBytes });
     return this;
   }
   match(method, path) {
@@ -64,6 +65,50 @@ export async function readJson(req) {
   } catch {
     throw new HttpError(400, 'bad_json', 'Cererea nu este un JSON valid.');
   }
+}
+
+/** Corp binar (de ex. o fotografie), cu limită de mărime. */
+export async function readRaw(req, maxBytes = 5 * 1024 * 1024) {
+  const chunks = [];
+  let size = 0;
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > maxBytes) throw new HttpError(413, 'too_large', `Fișierul depășește ${Math.round(maxBytes / 1024 / 1024)} MB.`);
+    chunks.push(chunk);
+  }
+  return Buffer.concat(chunks);
+}
+
+/**
+ * Servește un fișier încărcat (fotografie sau videoclip). Numele trebuie să fie strict de forma generată de server.
+ * Acceptă cereri parțiale (Range), necesare pentru derularea videoclipurilor.
+ */
+export function serveUpload(req, res, dir, name) {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return false;
+  if (!/^[a-z0-9-]{8,80}\.(jpg|png|webp|mp4|webm)$/.test(name)) return false;
+  const file = join(dir, name);
+  let stat;
+  try { stat = statSync(file); } catch { return false; }
+  if (!stat.isFile()) return false;
+  const headers = { 'Content-Type': TYPES[extname(file)], 'Cache-Control': 'public, max-age=86400', 'Content-Disposition': 'inline', 'Accept-Ranges': 'bytes' };
+  const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+  if (range && (range[1] || range[2])) {
+    let start = range[1] ? Number(range[1]) : stat.size - Number(range[2]);
+    let end = range[1] && range[2] ? Math.min(Number(range[2]), stat.size - 1) : stat.size - 1;
+    if (start < 0) start = 0;
+    if (start > end || start >= stat.size) {
+      res.writeHead(416, { 'Content-Range': `bytes */${stat.size}` }).end();
+      return true;
+    }
+    res.writeHead(206, { ...headers, 'Content-Range': `bytes ${start}-${end}/${stat.size}`, 'Content-Length': end - start + 1 });
+    if (req.method === 'HEAD') return res.end(), true;
+    createReadStream(file, { start, end }).pipe(res);
+    return true;
+  }
+  res.writeHead(200, { ...headers, 'Content-Length': stat.size });
+  if (req.method === 'HEAD') return res.end(), true;
+  createReadStream(file).pipe(res);
+  return true;
 }
 
 export function sendJson(res, status, data, headers = {}) {
@@ -109,6 +154,7 @@ export function securityHeaders(res) {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
     "font-src 'self' https://fonts.gstatic.com",
     "img-src 'self' data: blob:",
+    "media-src 'self' blob:",
     "connect-src 'self'",
     "frame-ancestors 'none'",
     "base-uri 'self'",
@@ -119,7 +165,7 @@ export function securityHeaders(res) {
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
   '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.svg': 'image/svg+xml', '.ico': 'image/x-icon',
-  '.webp': 'image/webp', '.json': 'application/json; charset=utf-8', '.txt': 'text/plain; charset=utf-8',
+  '.webp': 'image/webp', '.mp4': 'video/mp4', '.webm': 'video/webm', '.json': 'application/json; charset=utf-8', '.txt': 'text/plain; charset=utf-8',
 };
 
 /** Servește un fișier din `publicDir`. Refuză orice cale care iese din director sau fișierele ascunse. */

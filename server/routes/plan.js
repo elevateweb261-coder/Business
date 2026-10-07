@@ -3,6 +3,8 @@ import { validate, rules, todayIn } from '../validate.js';
 import { mondayOf } from '../plan/service.js';
 import { SLOTS } from '../plan/validate.js';
 import { foodOut } from './data.js';
+import { HttpError } from '../http.js';
+import { getSettings } from '../settings.js';
 
 export function registerPlanRoutes(router, app) {
   const plans = app.plans;
@@ -15,9 +17,18 @@ export function registerPlanRoutes(router, app) {
 
   router.on('GET', '/api/plan', ctx => plans.getWeek(ctx.user, weekParam(ctx)));
 
-  router.on('POST', '/api/plan/generate', ctx => plans.generateWeek(ctx.user, weekParam(ctx), { force: ctx.body.force === true }));
+  // Comutatorul din setările panoului: generarea cu AI poate fi oprită temporar (planurile existente rămân).
+  const aiEnabled = () => {
+    if (!getSettings(app.db).featureAiPlans) throw new HttpError(503, 'feature_disabled', 'Generarea planurilor este oprită temporar de echipa Metamorf. Planul existent rămâne disponibil; încearcă mai târziu.');
+  };
+
+  router.on('POST', '/api/plan/generate', ctx => {
+    aiEnabled();
+    return plans.generateWeek(ctx.user, weekParam(ctx), { force: ctx.body.force === true });
+  });
 
   router.on('POST', '/api/plan/replace', async ctx => {
+    aiEnabled();
     const d = validate(ctx.body, { day: rules.day(), slot: rules.oneOf(SLOTS) });
     return { meal: await plans.replaceMeal(ctx.user, d.day, d.slot) };
   });

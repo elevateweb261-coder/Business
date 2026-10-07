@@ -54,4 +54,9 @@ export class RateLimiter {
   reset(key) {
     this.hits.delete(key);
   }
+  /** Câte milisecunde mai sunt până se poate încerca din nou (0 dacă nu e blocat). */
+  retryAfter(key, now = Date.now()) {
+    const list = this.#recent(key, now);
+    return list.length < this.limit ? 0 : Math.max(0, this.windowMs - (now - list[0]));
+  }
 }

@@ -3,6 +3,7 @@ import { HttpError, badRequest } from '../http.js';
 import { validate, rules, isValidTimeZone } from '../validate.js';
 import { hashPassword, verifyPassword, newToken, hashToken } from '../security.js';
 import { tx } from '../db.js';
+import { recordCompletedRequest } from '../data-requests.js';
 
 const now = () => new Date().toISOString();
 const RESET_TTL_MS = 60 * 60 * 1000;
@@ -72,19 +73,7 @@ export function registerAuthRoutes(router, app) {
     const { email } = validate(ctx.body, { email: rules.email() });
     limits.forgot.hit(ctx.ip);
     const user = db.prepare('SELECT id, name FROM users WHERE email = ?').get(email);
-    if (user) {
-      const { token, hash } = newToken();
-      tx(db, () => {
-        db.prepare('DELETE FROM password_resets WHERE user_id = ?').run(user.id); // doar ultimul link rămâne valabil
-        db.prepare('INSERT INTO password_resets (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)')
-          .run(hash, user.id, now(), new Date(Date.now() + RESET_TTL_MS).toISOString());
-      });
-      await mailer.send({
-        to: email,
-        subject: 'Resetarea parolei Metamorf',
-        text: `Bună, ${user.name}!\n\nAm primit o cerere de resetare a parolei. Deschide linkul de mai jos în cel mult o oră:\n\n${config.appUrl}/#resetare/${token}\n\nDacă nu ai cerut resetarea, ignoră acest mesaj; parola rămâne neschimbată.`,
-      });
-    }
+    if (user) await sendResetLink(app, { id: user.id, name: user.name, email });
     // Același răspuns indiferent dacă emailul există, ca să nu dezvăluim conturile.
     return { ok: true, message: 'Dacă există un cont cu acest email, am trimis un link de resetare valabil o oră.' };
   }, { auth: false });
@@ -125,9 +114,38 @@ export function registerAuthRoutes(router, app) {
     if (!(await verifyPassword(password, user.password_hash))) {
       throw badRequest('Parola nu este corectă.', { password: 'Parola nu este corectă.' });
     }
-    db.prepare('DELETE FROM users WHERE id = ?').run(ctx.user.id); // restul datelor se șterg în cascadă
+    tx(db, () => {
+      // Cererea rămâne documentată după ștergere (user_id devine NULL, emailul e păstrat ca instantaneu).
+      recordCompletedRequest(db, {
+        user: ctx.user, type: 'delete', source: 'user',
+        requestedMessage: 'Ștergere cerută de client din aplicație, confirmată cu parola.',
+        completedMessage: 'Contul și toate datele asociate au fost șterse definitiv.',
+      });
+      db.prepare('DELETE FROM users WHERE id = ?').run(ctx.user.id); // restul datelor se șterg în cascadă
+    });
     app.clearSessionCookie(ctx);
     return { ok: true };
+  });
+}
+
+/** Creează un link de resetare (valabil o oră; doar ultimul rămâne valabil) și îl trimite pe email. */
+export async function sendResetLink({ db, config, mailer }, user) {
+  const { token, hash } = newToken();
+  tx(db, () => {
+    db.prepare('DELETE FROM password_resets WHERE user_id = ?').run(user.id);
+    db.prepare('INSERT INTO password_resets (token_hash, user_id, created_at, expires_at) VALUES (?, ?, ?, ?)')
+      .run(hash, user.id, now(), new Date(Date.now() + RESET_TTL_MS).toISOString());
+  });
+  await mailer.send({
+    to: user.email,
+    subject: 'Resetarea parolei Metamorf',
+    text: `Bună, ${user.name}!
+
+Am primit o cerere de resetare a parolei. Deschide linkul de mai jos în cel mult o oră:
+
+${config.appUrl}/#resetare/${token}
+
+Dacă nu ai cerut resetarea, ignoră acest mesaj; parola rămâne neschimbată.`,
   });
 }
 

@@ -4,6 +4,7 @@
 import { HttpError, badRequest, notFound } from '../http.js';
 import { validate, rules, todayIn, assertNotFuture, isValidTimeZone } from '../validate.js';
 import { OPTIONS, ONBOARDING_STEPS, planEligibility } from '../options.js';
+import { recordCompletedRequest } from '../data-requests.js';
 
 const now = () => new Date().toISOString();
 
@@ -275,26 +276,35 @@ export function registerDataRoutes(router, app) {
   // ---------- Export (dreptul de portabilitate) ----------
 
   router.on('GET', '/api/account/export', ctx => {
-    const uid = ctx.user.id;
-    const user = db.prepare('SELECT email, name, timezone, terms_accepted_at, created_at FROM users WHERE id = ?').get(uid);
-    const all = (sql, map) => db.prepare(sql).all(uid).map(map);
-    const data = {
-      exportedAt: now(),
-      account: user,
-      profile: profileOut(db.prepare('SELECT * FROM profiles WHERE user_id = ?').get(uid)),
-      targets: targetsOut(db.prepare('SELECT * FROM targets WHERE user_id = ?').get(uid)),
-      subscription: db.prepare('SELECT plan, status, current_period_end, cancel_at_period_end FROM subscriptions WHERE user_id = ?').get(uid) || null,
-      food: all('SELECT * FROM food_entries WHERE user_id = ? ORDER BY day, logged_at', foodOut),
-      water: all('SELECT day, ml FROM water_days WHERE user_id = ? ORDER BY day', r => ({ ...r })),
-      workouts: all('SELECT * FROM workout_sessions WHERE user_id = ? ORDER BY day', workoutOut),
-      weights: all('SELECT * FROM weights WHERE user_id = ? ORDER BY measured_at', weightOut),
-      plans: all('SELECT week_start, week_index, source, model, created_at FROM plans WHERE user_id = ? ORDER BY week_start', r => ({ ...r })),
-      planDays: all('SELECT day, data_json FROM plan_days WHERE user_id = ? ORDER BY day', r => ({ day: r.day, ...JSON.parse(r.data_json) })),
-      planTasksDone: all('SELECT day, task_id, done_at FROM plan_task_done WHERE user_id = ? ORDER BY day', r => ({ ...r })),
-    };
     ctx.headers['Content-Disposition'] = `attachment; filename="metamorf-date-${todayIn(ctx.user.timezone)}.json"`;
+    const data = buildExport(db, ctx.user.id);
+    recordCompletedRequest(db, {
+      user: ctx.user, type: 'export', source: 'user',
+      requestedMessage: 'Export cerut de client din aplicație.',
+      completedMessage: 'Exportul a fost generat și descărcat de client.',
+    });
     return data;
   });
+}
+
+/** Toate datele unui utilizator (dreptul de portabilitate). Folosit și de administrare, la cererea utilizatorului. */
+export function buildExport(db, uid) {
+  const user = db.prepare('SELECT email, name, timezone, terms_accepted_at, created_at FROM users WHERE id = ?').get(uid);
+  const all = (sql, map) => db.prepare(sql).all(uid).map(map);
+  return {
+    exportedAt: now(),
+    account: user,
+    profile: profileOut(db.prepare('SELECT * FROM profiles WHERE user_id = ?').get(uid)),
+    targets: targetsOut(db.prepare('SELECT * FROM targets WHERE user_id = ?').get(uid)),
+    subscription: db.prepare('SELECT plan, status, current_period_end, cancel_at_period_end FROM subscriptions WHERE user_id = ?').get(uid) || null,
+    food: all('SELECT * FROM food_entries WHERE user_id = ? ORDER BY day, logged_at', foodOut),
+    water: all('SELECT day, ml FROM water_days WHERE user_id = ? ORDER BY day', r => ({ ...r })),
+    workouts: all('SELECT * FROM workout_sessions WHERE user_id = ? ORDER BY day', workoutOut),
+    weights: all('SELECT * FROM weights WHERE user_id = ? ORDER BY measured_at', weightOut),
+    plans: all('SELECT week_start, week_index, source, model, created_at FROM plans WHERE user_id = ? ORDER BY week_start', r => ({ ...r })),
+    planDays: all('SELECT day, data_json FROM plan_days WHERE user_id = ? ORDER BY day', r => ({ day: r.day, ...JSON.parse(r.data_json) })),
+    planTasksDone: all('SELECT day, task_id, done_at FROM plan_task_done WHERE user_id = ? ORDER BY day', r => ({ ...r })),
+  };
 }
 
 export { targetsOut, foodOut };

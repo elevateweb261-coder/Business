@@ -1,5 +1,8 @@
-// Catalogul de alimente folosit la planuri. AI-ul poate alege DOAR alimente de aici (prin `id`) și gramajul;
-// caloriile și macronutrienții sunt calculați pe server din valorile de mai jos, nu preluați de la model.
+// Catalogul de alimente folosit la planuri și rețete. AI-ul poate alege DOAR alimente de aici (prin `id`) și gramajul;
+// caloriile și macronutrienții sunt calculați pe server din catalog, nu preluați de la model.
+// Sursa de adevăr este tabelul `foods` (panoul de administrare: import din USDA / CIQUAL / Open Food Facts sau
+// introducere manuală). Lista de mai jos este doar catalogul inițial, copiat o singură dată în baza de date
+// (server/catalog.js); `FOODS` / `FOOD_BY_ID` conțin catalogul activ, încărcat prin `setFoods`.
 //
 // Valori la 100 g, alimente gătite unde e indicat. Sursa de referință: USDA FoodData Central (valori uzuale).
 // ⚠ Înainte de lansare: verificați fiecare rând cu sursa oficială aleasă (USDA / CIQUAL) — vezi TASKS.md.
@@ -11,7 +14,7 @@ export const FOOD_SOURCE = 'USDA FoodData Central (valori de referință; de ver
 
 const F = (id, name, group, diet, kcal, protein, carbs, fat, tags = []) => ({ id, name, group, diet, kcal, protein, carbs, fat, tags });
 
-export const FOODS = [
+export const SEED_FOODS = [
   // Cereale, pâine, tuberculi
   F('fulgi_ovaz', 'Fulgi de ovăz', 'cereale', 'vegan', 379, 13.2, 67.7, 6.5, ['ovaz', 'gluten']),
   F('granola', 'Granola', 'cereale', 'vegan', 489, 13.7, 53.9, 24.3, ['ovaz', 'gluten', 'nuci']),
@@ -103,7 +106,19 @@ export const FOODS = [
   F('sos_soia', 'Sos de soia', 'altele', 'vegan', 53, 8.1, 4.9, 0.6, ['soia', 'gluten']),
 ];
 
-export const FOOD_BY_ID = new Map(FOODS.map(f => [f.id, f]));
+export const FOODS = [];
+export const FOOD_BY_ID = new Map();
+
+/** Înlocuiește catalogul activ (aceleași obiecte exportate, ca modulele care le importă să vadă schimbarea). */
+export function setFoods(list) {
+  FOODS.splice(0, FOODS.length, ...list);
+  FOOD_BY_ID.clear();
+  for (const f of list) FOOD_BY_ID.set(f.id, f);
+}
+
+export const FOOD_GROUPS = { cereale: 'Cereale și tuberculi', proteine: 'Proteine', lactate: 'Lactate', legume: 'Legume', fructe: 'Fructe', grasimi: 'Grăsimi, nuci și semințe', altele: 'Altele' };
+export const DIET_TYPES = { vegan: 'Vegan', vegetarian: 'Vegetarian', fish: 'Pește', meat: 'Carne', pork: 'Porc' };
+export const FOOD_SOURCES = { usda: 'USDA', ciqual: 'CIQUAL', off: 'Open Food Facts', manual: 'Manual' };
 
 export const DIET_LEVEL = { vegan: 0, vegetarian: 1, fish: 2, meat: 3, pork: 4 };
 export const DIET_MAX = { 'Vegan': 0, 'Vegetarian': 1, 'Fără porc': 3, 'Cu carne': 4 };
@@ -112,4 +127,61 @@ export const DIET_MAX = { 'Vegan': 0, 'Vegetarian': 1, 'Fără porc': 3, 'Cu car
 export function foodsForDiet(diet) {
   const max = DIET_MAX[diet] ?? 4;
   return FOODS.filter(f => DIET_LEVEL[f.diet] <= max);
+}
+
+// ---------- Alergeni (cei 14 alergeni majori din UE, Regulamentul 1169/2011, anexa II) ----------
+// Derivați din etichetele alimentelor. ⚠ De verificat înainte de lansare, împreună cu valorile nutriționale.
+export const ALLERGENS = {
+  gluten: 'Cereale cu gluten',
+  lapte: 'Lapte (inclusiv lactoză)',
+  oua: 'Ouă',
+  peste: 'Pește',
+  arahide: 'Arahide',
+  soia: 'Soia',
+  fructe_coaja: 'Fructe cu coajă lemnoasă',
+  susan: 'Susan',
+  telina: 'Țelină',
+  mustar: 'Muștar',
+  crustacee: 'Crustacee',
+  moluste: 'Moluște',
+  lupin: 'Lupin',
+  sulfiti: 'Dioxid de sulf și sulfiți',
+};
+
+const TAG_ALLERGEN = {
+  gluten: 'gluten', lapte: 'lapte', lactoza: 'lapte', ou: 'oua', oua: 'oua', peste: 'peste', arahide: 'arahide',
+  soia: 'soia', nuci: 'fructe_coaja', migdale: 'fructe_coaja', 'fructe cu coaja': 'fructe_coaja', susan: 'susan',
+};
+
+/** Codurile de alergeni ale unui aliment: cele salvate în catalog sau, pentru catalogul inițial, deduse din etichete. */
+export const allergensOf = food => (Array.isArray(food.allergens) ? food.allergens : [...new Set((food.tags || []).map(t => TAG_ALLERGEN[t]).filter(Boolean))]);
+
+export const DIET_NAMES = ['Cu carne', 'Fără porc', 'Vegetarian', 'Vegan'];
+
+/**
+ * Calculul complet al unei rețete din catalog: nutriție totală și pe porție, alergeni, diete compatibile.
+ * `ingredients`: [{ foodId, grams }]. Alimentele necunoscute sunt ignorate (și raportate în `unknown`).
+ */
+export function recipeFacts(ingredients, servings = 1) {
+  const total = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
+  const allergens = new Set();
+  const unknown = [];
+  let level = -1;
+  for (const i of ingredients) {
+    const f = FOOD_BY_ID.get(i.foodId);
+    if (!f) { unknown.push(i.foodId); continue; }
+    const k = i.grams / 100;
+    total.kcal += f.kcal * k; total.protein += f.protein * k; total.carbs += f.carbs * k; total.fat += f.fat * k;
+    allergensOf(f).forEach(a => allergens.add(a));
+    level = Math.max(level, DIET_LEVEL[f.diet]);
+  }
+  const round = n => ({ kcal: Math.round(n.kcal), protein: Math.round(n.protein * 10) / 10, carbs: Math.round(n.carbs * 10) / 10, fat: Math.round(n.fat * 10) / 10 });
+  const s = Math.max(1, servings || 1);
+  return {
+    total: round(total),
+    perServing: round({ kcal: total.kcal / s, protein: total.protein / s, carbs: total.carbs / s, fat: total.fat / s }),
+    allergens: Object.keys(ALLERGENS).filter(a => allergens.has(a)),
+    diets: level < 0 ? [] : DIET_NAMES.filter(d => DIET_MAX[d] >= level),
+    unknown,
+  };
 }

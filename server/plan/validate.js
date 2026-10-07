@@ -2,7 +2,7 @@
 // Un plan este acceptat doar dacă: respectă schema, folosește doar alimente/exerciții din cataloage,
 // respectă dieta și alimentele evitate, iar caloriile zilei sunt aproape de țintă (după ajustarea porțiilor).
 import { FOOD_BY_ID, DIET_LEVEL, DIET_MAX } from './foods.js';
-import { EXERCISE_BY_ID, availableEquipment } from './exercises.js';
+import { EXERCISE_BY_ID, availableEquipment, exerciseMismatch } from './exercises.js';
 
 export const SLOTS = ['mic_dejun', 'pranz', 'cina', 'gustare'];
 export const SLOT_LABEL = { mic_dejun: 'Mic dejun', pranz: 'Prânz', cina: 'Cină', gustare: 'Gustare' };
@@ -94,7 +94,8 @@ function checkTask(task, where, ctx) {
       for (const ex of task.exercises) {
         const e = EXERCISE_BY_ID.get(ex?.exerciseId);
         if (!e) { errors.push(`${where}: exercițiul „${ex?.exerciseId}” nu există în catalog.`); continue; }
-        if (!ctx.equipment.has(e.equipment)) errors.push(`${where}: „${e.name}” necesită echipament pe care utilizatorul nu îl are.`);
+        const mismatch = exerciseMismatch(e, ctx.profile, ctx.equipment);
+        if (mismatch) errors.push(`${where}: „${e.name}” ${mismatch}.`);
         if (!isInt(ex.sets, 1, 6)) errors.push(`${where}: „${e.name}” trebuie să aibă 1–6 serii.`);
         if (e.mode === 'reps' && !isInt(ex.reps, 4, 25)) errors.push(`${where}: „${e.name}” trebuie să aibă 4–25 de repetări.`);
         if (e.mode === 'time' && !isInt(ex.seconds, 15, 120)) errors.push(`${where}: „${e.name}” trebuie să dureze 15–120 de secunde.`);
@@ -143,6 +144,8 @@ function buildTask(task, i) {
       const e = EXERCISE_BY_ID.get(ex.exerciseId);
       return {
         exerciseId: e.id, name: e.name, group: e.group, mode: e.mode, instructions: e.instructions,
+        steps: e.steps, mistakes: e.mistakes, imageUrl: e.imageUrl,
+        ...(e.videoFileUrl || e.videoUrl ? { video: { url: e.videoFileUrl || e.videoUrl, file: !!e.videoFileUrl, source: e.videoSource } } : {}),
         sets: ex.sets, restSec: ex.restSec, ...(e.mode === 'reps' ? { reps: ex.reps } : { seconds: ex.seconds }),
       };
     });

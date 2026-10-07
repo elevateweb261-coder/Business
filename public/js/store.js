@@ -204,7 +204,7 @@ function workoutCount(n = 30) {
   return Object.entries(db.days).filter(([key]) => key >= from).reduce((s, [, d]) => s + d.workouts.length, 0);
 }
 
-const scansLeft = () => Math.max(0, 1 - getDay().scans);
+const scansLeft = () => (appSettings.features.photoScan ? Math.max(0, appSettings.scanLimits.free - getDay().scans) : 0);
 
 /** Pașii de început pentru un cont nou. */
 function firstSteps() {

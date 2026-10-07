@@ -126,6 +126,7 @@ function profileDialog() {
       <button data-action="healthData">${icon('heart')}<span>Date de sănătate<small>${f.healthConsent ? 'Acord dat — poți retrage oricând' : 'Fără acord, nu păstrăm alergii sau limitări'}</small></span></button>
       <button data-action="changePassword">${icon('lock')}<span>Schimbă parola</span></button>
       <a href="/api/account/export" download>${icon('upload')}<span>Exportă datele (JSON)<small>Tot ce avem despre tine, într-un fișier</small></span></a>
+      ${session.user.role === 'admin' ? `<a href="/admin.html">${icon('settings')}<span>Panou de administrare<small>Statistici, utilizatori, AI, audit</small></span></a>` : ''}
       <button data-action="logout">${icon('close')}<span>Deconectare</span></button>
       <button class="danger" data-action="deleteAccountAsk">${icon('trash')}<span>Șterge contul<small>Definitiv, cu toate datele</small></span></button>
     </div>`);
@@ -270,7 +271,7 @@ function subscriptionDialog(period) {
   modal(`
     <span class="tag green">METAMORF PREMIUM</span>
     <h2>Abonament · ${esc(period)}</h2>
-    <p>Include planul alimentar complet, toate zilele de antrenament și 3 scanări pe zi.</p>
+    <p>Include planul alimentar complet, toate zilele de antrenament și ${scanCount(appSettings.scanLimits.premium)} pe zi.</p>
     <p>Plățile nu sunt încă active: prețurile și procesatorul de plăți nu au fost configurate. Prețul, reînnoirea și condițiile de anulare vor fi afișate înainte de activare.</p>
     <button class="btn outline full" data-action="close">Continuă explorarea</button>`);
 }

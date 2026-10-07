@@ -306,11 +306,7 @@ function planExerciseDialog(key, i) {
   const w = planDay(key)?.tasks.find(t => t.type === 'antrenament');
   const e = w?.exercises?.[i];
   if (!e) return;
-  modal(`
-    <h2>${esc(e.name)}</h2>
-    <span class="tag green">${e.sets} × ${e.mode === 'reps' ? `${e.reps} repetări` : `${e.seconds} s`} · pauză ${e.restSec} s</span>
-    <p>${esc(e.instructions)}</p>
-    <p class="small-note">Mișcă-te controlat și oprește-te dacă apare durere.</p>`);
+  modal(exerciseDetailHtml(e)); // aceeași prezentare ca în previzualizarea din panou (exercise-view.js)
 }
 
 function regenerateDialog() {

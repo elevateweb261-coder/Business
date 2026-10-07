@@ -35,6 +35,7 @@ export function buildConfig(env = process.env, overrides = {}) {
     appUrl,
     dbPath: resolve(ROOT, env.DATABASE_PATH || 'data/metamorf.db'),
     outboxDir: resolve(ROOT, env.MAIL_OUTBOX_DIR || 'data/outbox'),
+    uploadsDir: resolve(ROOT, env.UPLOADS_DIR || 'data/uploads'),
     mailMode: env.MAIL_MODE || 'outbox',
     mailFrom: env.MAIL_FROM || 'Metamorf <no-reply@localhost>',
     cookieSecure: env.COOKIE_SECURE ? env.COOKIE_SECURE === 'true' : appUrl.startsWith('https://'),
@@ -44,6 +45,8 @@ export function buildConfig(env = process.env, overrides = {}) {
     publicDir: resolve(ROOT, 'public'),
     // AI: cheia se citește doar pe server. AI_PROVIDER: auto | anthropic | test | off
     anthropicKey: env.ANTHROPIC_API_KEY || '',
+    secretKey: env.SECRET_KEY || '',
+    adminTimezone: env.ADMIN_TIMEZONE || 'Europe/Bucharest', // „azi” în statisticile de administrare
     aiProvider: env.AI_PROVIDER || 'auto',
     aiModel: env.AI_MODEL || 'claude-opus-5-5',
     aiEffort: env.AI_EFFORT || 'medium',

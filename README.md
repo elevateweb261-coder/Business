@@ -35,6 +35,23 @@ Cum funcționează: serverul trimite profilul, preferințele și țintele către
 
 **Fără server:** `public/index.html` deschis direct în browser pornește doar **modul demo** (date exemplu, salvate în browser).
 
+## Panoul de administrare
+
+Pagina **`/admin.html`** (de exemplu http://localhost:3000/admin.html): statistici, utilizatori (căutare, detalii, export, deconectare forțată, link de resetare, ștergere cu confirmare), utilizarea și costul estimat al AI-ului, cataloagele de alimente și exerciții, jurnalul de audit.
+
+**Conectarea în panou** are doi pași: email + parolă, apoi codul de 6 cifre dintr-o aplicație de autentificare (Google Authenticator, Microsoft Authenticator, Authy, 1Password). La prima conectare, panoul afișează un cod QR pentru configurare. După 5 parole greșite, conectarea se blochează 15 minute; după 5 coduri greșite, se reia de la parolă. Sesiunea din aplicație nu ajunge pentru panou, iar sesiunile de administrare expiră după 12 ore.
+
+Rolul de administrator se acordă **doar din linia de comandă de pe server**, pentru un cont deja creat în aplicație:
+
+```bash
+npm run admin -- grant nume@exemplu.ro    # acordă rolul (contul trebuie să se reconecteze)
+npm run admin -- revoke nume@exemplu.ro   # retrage rolul
+npm run admin -- list                     # administratorii existenți
+npm run admin -- reset-2fa nume@exemplu.ro  # telefon pierdut: la următoarea conectare se configurează din nou
+```
+
+Protecții: toate verificările se fac pe server; administratorul nu vede alergii, limitări fizice, parole sau conținutul jurnalului; fiecare acțiune (inclusiv deschiderea detaliilor unui cont) intră în jurnalul de audit; abonamentele nu se modifică manual.
+
 ## Arhitectură — de ce așa
 
 - **Node.js aproape fără dependențe** (`node:http`, `node:sqlite`, `node:crypto`); singura dependență este SDK-ul oficial Anthropic, încărcat doar când se generează un plan. Pornește oriunde există Node, fără compilatoare pe Windows.
@@ -53,6 +70,7 @@ Cum funcționează: serverul trimite profilul, preferințele și țintele către
 ```
 public/                 frontend (servit static)
   index.html, style.css, metamorf-logo.png, meal.jpg
+  admin.html            panoul de administrare (js/admin.js)
   js/  utils · icons · data · api · forms · store · views · dialogs · events · main
 server/
   server.js             pornire
@@ -60,6 +78,8 @@ server/
   routes/auth.js        cont: înregistrare, conectare, resetare, parolă, ștergere
   routes/data.js        profil, ținte, jurnal, apă, antrenamente, greutate, export
   routes/plan.js        plan: generare, citire (gratuit/Premium), înlocuire masă, porție, sarcini
+  routes/admin.js       panoul de administrare (doar rol admin, cu jurnal de audit)
+  admin-cli.js          acordarea / retragerea rolului de administrator (npm run admin)
   plan/                 cataloage (alimente, exerciții), generatori (Claude / test), validare, serviciu
   migrations/           schema bazei de date
 test/api.test.js        teste API

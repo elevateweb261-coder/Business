@@ -1,13 +1,12 @@
 // Catalogul de exerciții. AI-ul poate alege DOAR exerciții de aici (prin `id`), cu serii, repetări/secunde și pauze.
-// Fără videoclipuri sau linkuri: demonstrațiile video se adaugă doar din conținut propriu sau licențiat.
+// Sursa de adevăr este tabelul `exercises` (editat din panoul de administrare); lista de mai jos este doar
+// catalogul inițial, copiat o singură dată în baza de date (server/catalog.js). Planurile folosesc DOAR
+// exercițiile publicate, încărcate în `EXERCISES` / `EXERCISE_BY_ID` prin `setExercises`.
 // ⚠ Înainte de lansare: instrucțiunile trebuie revizuite de un antrenor.
-//
-// equipment: ce e necesar — 'none', 'gantere', 'benzi', 'sala'
-// mode: 'reps' (repetări) sau 'time' (secunde)
-
+// equipment (catalog inițial): 'none', 'gantere', 'benzi', 'sala'; mode: 'reps' (repetări) sau 'time' (secunde)
 const E = (id, name, group, equipment, mode, instructions) => ({ id, name, group, equipment, mode, instructions });
 
-export const EXERCISES = [
+export const SEED_EXERCISES = [
   // Fără echipament
   E('genuflexiuni', 'Genuflexiuni', 'picioare', 'none', 'reps', 'Picioarele la lățimea umerilor, coboară controlat ca și cum te-ai așeza, cu spatele drept și genunchii în direcția vârfurilor.'),
   E('fandari', 'Fandări alternative', 'picioare', 'none', 'reps', 'Fă un pas mare înainte și coboară până când ambii genunchi sunt la aproximativ 90°. Revino și schimbă piciorul.'),
@@ -51,19 +50,54 @@ export const EXERCISES = [
   E('banda_inclinata', 'Mers pe bandă înclinată', 'cardio', 'sala', 'time', 'Mers alert pe bandă cu înclinație moderată, fără să te ții de mânere.'),
 ];
 
-export const EXERCISE_BY_ID = new Map(EXERCISES.map(e => [e.id, e]));
+// ---------- Opțiuni (aceleași în panou și în validarea de pe server) ----------
+
+export const MUSCLES = {
+  picioare: 'Picioare', fesieri: 'Fesieri', piept: 'Piept', spate: 'Spate', umeri: 'Umeri', brate: 'Brațe',
+  core: 'Abdomen și trunchi', cardio: 'Cardio', mobilitate: 'Mobilitate', tot_corpul: 'Tot corpul',
+};
+export const PLACES = { acasa: 'Acasă', sala: 'Sală' };
+export const EQUIPMENT = {
+  none: 'Fără echipament', saltea: 'Saltea', gantere: 'Gantere', benzi: 'Benzi elastice', kettlebell: 'Kettlebell',
+  bara: 'Bară cu discuri', banca: 'Bancă', bara_tractiuni: 'Bară de tracțiuni', aparate: 'Aparate de sală și cabluri',
+};
+export const LEVELS = { incepator: 'Începător', intermediar: 'Intermediar', avansat: 'Avansat' };
+const LEVEL_RANK = { incepator: 0, intermediar: 1, avansat: 2 };
+const EXPERIENCE_RANK = { 'Începător': 0, 'Intermediar': 1, 'Avansat': 2 };
+
+// ---------- Catalogul activ (exercițiile publicate din baza de date) ----------
+
+export const EXERCISES = [];
+export const EXERCISE_BY_ID = new Map();
+
+/** Înlocuiește catalogul activ (aceleași obiecte exportate, ca modulele care le importă să vadă schimbarea). */
+export function setExercises(list) {
+  EXERCISES.splice(0, EXERCISES.length, ...list);
+  EXERCISE_BY_ID.clear();
+  for (const e of list) EXERCISE_BY_ID.set(e.id, e);
+}
 
 /** Echipamentul disponibil, după preferințele utilizatorului. */
 export function availableEquipment(profile) {
-  const set = new Set(['none']);
-  if (profile.location === 'La sală' || profile.equipment === 'Echipament de sală') {
-    ['gantere', 'benzi', 'sala'].forEach(e => set.add(e));
-  } else if (profile.equipment === 'Gantere') set.add('gantere');
+  const set = new Set(['none', 'saltea']);
+  if (atGym(profile)) Object.keys(EQUIPMENT).forEach(e => set.add(e));
+  else if (profile.equipment === 'Gantere') set.add('gantere');
   else if (profile.equipment === 'Benzi elastice') set.add('benzi');
   return set;
 }
 
+const atGym = profile => profile.location === 'La sală' || profile.equipment === 'Echipament de sală';
+
+/** Motivul pentru care exercițiul nu i se potrivește utilizatorului (sau null dacă se potrivește). */
+export function exerciseMismatch(e, profile, equipment = availableEquipment(profile)) {
+  if (!e.equipment.every(x => equipment.has(x))) return 'necesită echipament pe care utilizatorul nu îl are';
+  if (!e.places.includes('acasa') && !atGym(profile)) return 'se face doar la sală';
+  const exp = EXPERIENCE_RANK[profile.experience];
+  if (e.level && exp !== undefined && LEVEL_RANK[e.level] > exp) return 'este peste nivelul de experiență al utilizatorului';
+  return null;
+}
+
 export function exercisesFor(profile) {
   const eq = availableEquipment(profile);
-  return EXERCISES.filter(e => eq.has(e.equipment));
+  return EXERCISES.filter(e => !exerciseMismatch(e, profile, eq));
 }

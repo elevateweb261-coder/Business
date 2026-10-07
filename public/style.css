@@ -4368,3 +4368,2342 @@ dialog ol {
     padding: 0;
   }
 }
+
+/* ========== Panoul de administrare (admin.html) ========== */
+.admin-badge {
+  background: #0c0e0c;
+  color: #e8cc7c;
+  border-color: #0c0e0c;
+}
+
+.adm-denied .sidebar nav,
+.adm-denied .menu-button {
+  visibility: hidden;
+}
+
+.sidebar-links a {
+  color: inherit;
+  font-size: 12px;
+}
+
+.sidebar-links a:hover {
+  color: var(--lime);
+}
+
+/* Indicatori principali (număr mare, nu grafic) */
+.adm-tiles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.adm-tile strong {
+  display: block;
+  font-family: Manrope, sans-serif;
+  font-size: 30px;
+  letter-spacing: -1px;
+  line-height: 1.25;
+  margin: 4px 0 2px;
+  color: var(--ink);
+}
+
+.adm-tile small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.adm-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+/* Grafic: o singură serie, grilă discretă */
+.adm-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.adm-chart line.grid {
+  stroke: #e9eee4;
+  stroke-width: 1;
+}
+
+.adm-chart line.base {
+  stroke: #c9d3c4;
+  stroke-width: 1;
+}
+
+.adm-chart text {
+  fill: #7d8a80;
+  font-size: 11px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.adm-bar path {
+  fill: #153d32;
+}
+
+.adm-bar:hover path,
+.adm-bar:focus path {
+  fill: #2b6b55;
+}
+
+.adm-bar:focus {
+  outline: none;
+}
+
+.adm-bar:focus rect {
+  fill: #e8cc7c33;
+}
+
+.chart-tip {
+  position: absolute;
+  z-index: 70;
+  background: #0c0e0c;
+  color: #f4ecd2;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  pointer-events: none;
+  white-space: nowrap;
+  box-shadow: 0 6px 18px #0004;
+}
+
+.adm-table-toggle {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.adm-table-toggle summary {
+  cursor: pointer;
+}
+
+/* Bare orizontale cu etichete directe */
+.adm-hbars {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.adm-hbar-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.adm-hbar-head small {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.adm-hbar {
+  height: 8px;
+  background: #f1f4ee;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.adm-hbar i {
+  display: block;
+  height: 100%;
+  background: #153d32;
+  border-radius: 0 4px 4px 0;
+}
+
+.adm-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+}
+
+.adm-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 14px;
+}
+
+.adm-list li:last-child {
+  border-bottom: 0;
+}
+
+/* Filtre și tabele */
+.adm-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.adm-filters .field {
+  margin: 0;
+  flex: 1 1 200px;
+}
+
+.adm-filters .field:has(select) {
+  flex: 0 1 220px;
+}
+
+.adm-tabs {
+  margin: 0;
+  flex: 0 0 auto;
+  min-width: 300px;
+}
+
+.adm-table-card {
+  padding: 0;
+  overflow: hidden;
+  margin-bottom: 18px;
+}
+
+.adm-table-card > .card-heading {
+  padding: 18px 20px 0;
+}
+
+.adm-table-card .table-wrap {
+  margin: 0;
+}
+
+.adm-table {
+  font-size: 13.5px;
+}
+
+.adm-table th,
+.adm-table td {
+  padding: 12px 16px;
+  vertical-align: top;
+}
+
+.adm-table th {
+  background: #f8faf6;
+  white-space: nowrap;
+}
+
+.adm-table td {
+  font-weight: 400;
+}
+
+.adm-table td:first-child {
+  font-weight: 400;
+}
+
+.adm-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.adm-table tbody tr:hover {
+  background: #fbfcf9;
+}
+
+.adm-table.compact th,
+.adm-table.compact td {
+  padding: 8px 10px;
+}
+
+.adm-wrap {
+  min-width: 260px;
+  color: var(--muted);
+}
+
+.adm-pager {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  font-size: 13px;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+}
+
+/* Detaliile contului */
+.adm-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 16px;
+  margin: 14px 0 18px;
+}
+
+.adm-detail > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+}
+
+.adm-detail span {
+  color: var(--muted);
+  font-size: 11.5px;
+}
+
+.adm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.form-error {
+  color: #a4493b;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+dialog code,
+.notice-card code {
+  font-size: 12px;
+  background: #00000010;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+@media (max-width: 1180px) {
+  .adm-tiles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .adm-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .adm-tiles {
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .adm-tile strong {
+    font-size: 22px;
+  }
+  .adm-tile small {
+    font-size: 11px;
+  }
+  .adm-grid {
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .adm-detail {
+    grid-template-columns: 1fr;
+  }
+  .adm-tabs {
+    min-width: 0;
+    flex: 1 1 100%;
+  }
+  .adm-table th,
+  .adm-table td {
+    padding: 10px 12px;
+  }
+  /* Panoul nu are bara de jos a aplicației; păstrăm meniul ☰. */
+  body.admin .main-shell {
+    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Lista de utilizatori: carduri în loc de tabel */
+  .adm-table.stack thead {
+    display: none;
+  }
+  .adm-table.stack,
+  .adm-table.stack tbody,
+  .adm-table.stack tr,
+  .adm-table.stack td {
+    display: block;
+    width: 100%;
+  }
+  .adm-table.stack tr {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .adm-table.stack td {
+    border: 0;
+    padding: 3px 0;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 13px;
+  }
+  .adm-table.stack td[data-label]::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .adm-table.stack td:first-child::before {
+    content: none;
+  }
+  .adm-table.stack .adm-row-action {
+    padding-top: 8px;
+  }
+  .adm-table.stack .adm-row-action .btn {
+    width: 100%;
+  }
+}
+
+/* ========== Panou: conectare în doi pași ========== */
+.adm-auth .adm-auth-title {
+  font-size: 32px;
+}
+
+.setup-steps {
+  padding-left: 20px;
+  margin: 0 0 16px;
+  font-size: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.setup-steps details {
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.setup-steps summary {
+  cursor: pointer;
+  color: var(--green);
+  font-weight: 600;
+}
+
+.qr-box {
+  margin: 10px 0 4px;
+  width: 184px;
+  padding: 10px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.qr-box svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.setup-key {
+  display: inline-block;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 15px;
+  letter-spacing: 1px;
+  background: #f1f4ee;
+  padding: 8px 10px;
+  border-radius: 8px;
+  word-break: break-all;
+}
+
+.code-input {
+  font-family: Manrope, sans-serif !important;
+  font-size: 28px !important;
+  letter-spacing: 12px;
+  text-align: center;
+  padding: 12px !important;
+}
+
+.code-input::placeholder {
+  color: #c9d3c4;
+}
+
+body.admin .sidebar-links button {
+  font-size: 12px;
+  color: inherit;
+}
+
+/* ========== Panou (ecranul 2): selector de perioadă, retenție, grafic fără date ========== */
+.adm-segment {
+  display: inline-flex;
+  background: #f1f4ee;
+  border-radius: 11px;
+  padding: 3px;
+  flex-shrink: 0;
+}
+
+.adm-segment button {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.adm-segment [aria-pressed="true"] {
+  background: white;
+  color: var(--green);
+  box-shadow: 0 1px 4px #153d3218;
+}
+
+.adm-tile-unit {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+
+.adm-grid.single {
+  grid-template-columns: 1fr;
+}
+
+.adm-grid.even {
+  grid-template-columns: 1fr 1fr;
+}
+
+.adm-chart-empty {
+  position: relative;
+}
+
+.adm-chart-empty .adm-chart {
+  opacity: .6;
+}
+
+.adm-chart-msg {
+  position: absolute;
+  inset: 0 0 24px 30px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 0 24px;
+}
+
+.adm-chart-msg svg {
+  width: 22px;
+  height: 22px;
+  color: #a6b2a3;
+}
+
+.adm-chart-msg p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  max-width: 360px;
+}
+
+.adm-ret-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.adm-ret strong {
+  display: block;
+  font-family: Manrope, sans-serif;
+  font-size: 28px;
+  margin: 2px 0 8px;
+}
+
+.adm-ret small {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (max-width: 1180px) {
+  .adm-grid.even {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .page-heading > .adm-segment {
+    align-self: flex-start;
+  }
+  .adm-segment button {
+    padding: 7px 10px;
+    font-size: 12px;
+  }
+  .adm-ret-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .adm-ret strong {
+    font-size: 22px;
+  }
+}
+
+.adm-chart-msg p {
+  background: white;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+/* ========== Utilizatori (ecranul 3): filtre, pagina de detalii, date de sănătate protejate ========== */
+.adm-user-filters {
+  align-items: flex-end;
+}
+
+.adm-user-filters .field {
+  flex: 1 1 150px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.adm-user-filters .adm-f-search {
+  flex: 2 1 240px;
+}
+
+.adm-f-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.field textarea {
+  width: 100%;
+  border: 1px solid #dce4d8;
+  border-radius: 10px;
+  padding: 12px 13px;
+  font: inherit;
+  color: var(--ink);
+  resize: vertical;
+}
+
+.adm-link {
+  font-weight: 650;
+  color: var(--green);
+}
+
+.adm-link:hover {
+  text-decoration: underline;
+}
+
+.adm-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green);
+  margin-bottom: 10px;
+}
+
+.adm-back svg {
+  width: 15px;
+  height: 15px;
+  transform: scaleX(-1);
+}
+
+.adm-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.adm-dl {
+  margin: 0;
+  display: grid;
+}
+
+.adm-dl > div {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+}
+
+.adm-dl > div:last-child {
+  border-bottom: 0;
+}
+
+.adm-dl dt {
+  color: var(--muted);
+}
+
+.adm-dl dd {
+  margin: 0;
+}
+
+.adm-subhead {
+  font-size: 13px;
+  margin: 16px 0 8px;
+}
+
+.adm-health {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border: 1px dashed #d9c78a;
+  background: #fffdf6;
+}
+
+.adm-health h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+}
+
+.adm-health p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.adm-health > div:not(.adm-health-icon) {
+  flex: 1;
+}
+
+.adm-health-icon {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 12px;
+  background: #0c0e0c;
+  color: #e8cc7c;
+  display: grid;
+  place-items: center;
+}
+
+.adm-health.open {
+  display: block;
+  border-style: solid;
+}
+
+.adm-health.open h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.adm-health.open h3 svg {
+  width: 17px;
+  height: 17px;
+  color: #a4493b;
+}
+
+@media (max-width: 1180px) {
+  .adm-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .adm-dl > div {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+  .adm-health {
+    flex-wrap: wrap;
+  }
+  .adm-health .btn {
+    width: 100%;
+  }
+  .adm-f-actions {
+    width: 100%;
+  }
+  .adm-f-actions .btn {
+    flex: 1;
+  }
+}
+
+.adm-detail-grid {
+  align-items: start;
+}
+
+.adm-detail-grid > .adm-health {
+  grid-column: 1 / -1;
+}
+
+/* ===== Administrare: grupuri în bara laterală ===== */
+.admin [hidden] {
+  display: none !important;
+}
+
+.admin .workspace-label {
+  margin-bottom: 8px;
+}
+
+.nav-group-label {
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+  color: #6f786f;
+  margin: 16px 15px 4px;
+}
+
+.tag.blue {
+  background: #e7f0f6;
+  color: #2f6283;
+}
+
+.tag.red {
+  background: #f8e9e5;
+  color: #a4493b;
+}
+
+/* ===== Ecranul 4: cereri de date ===== */
+.adm-status-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.adm-status-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: white;
+  font-size: 13px;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+}
+
+.adm-status-chip strong {
+  margin-left: auto;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+
+.adm-status-chip:hover {
+  border-color: #c9d4c6;
+}
+
+.adm-status-chip.active {
+  border-color: var(--green);
+  box-shadow: inset 0 0 0 1px var(--green);
+}
+
+.adm-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: 0 0 9px;
+  background: #a7b1a8;
+}
+
+.adm-dot.warn { background: #c9923f; }
+.adm-dot.blue { background: #3c7aa3; }
+.adm-dot.green { background: #5b8c3e; }
+.adm-dot.red { background: #b5513f; }
+
+.adm-span {
+  grid-column: 1 / -1;
+}
+
+.adm-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.adm-timeline li {
+  position: relative;
+  display: flex;
+  gap: 14px;
+  padding: 0 0 18px;
+}
+
+.adm-timeline li:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 16px;
+  bottom: 0;
+  width: 1px;
+  background: var(--line);
+}
+
+.adm-timeline .adm-dot {
+  width: 11px;
+  height: 11px;
+  flex-basis: 11px;
+  margin-top: 5px;
+  box-shadow: 0 0 0 3px white;
+}
+
+.adm-timeline p {
+  margin: 2px 0;
+  font-size: 14px;
+}
+
+.adm-timeline strong {
+  font-size: 13px;
+}
+
+.adm-timeline small {
+  font-size: 12px;
+}
+
+/* ===== Ecranul 5: rețete ===== */
+.adm-thumb-cell {
+  width: 80px;
+}
+
+.adm-thumb {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #f0f3ee;
+  color: #a2ad9f;
+}
+
+.adm-thumb .icon {
+  width: 20px;
+  height: 20px;
+}
+
+.adm-chips {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.adm-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 330px;
+  gap: 18px;
+  align-items: start;
+}
+
+.adm-editor-main {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.adm-editor-main .card,
+.adm-editor-side .card {
+  margin: 0;
+}
+
+.adm-editor-side {
+  position: sticky;
+  top: 18px;
+  display: grid;
+  gap: 18px;
+}
+
+.adm-ed-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 0.7fr;
+  gap: 12px;
+}
+
+.adm-ed-buttons {
+  display: grid;
+  gap: 8px;
+}
+
+.adm-dirty {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: -4px 0 12px;
+}
+
+.adm-dirty.on {
+  color: #93652a;
+  font-weight: 600;
+}
+
+.adm-dirty.on::before {
+  content: "● ";
+}
+
+/* Fotografie */
+.adm-photo {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 8px 18px;
+  align-items: start;
+}
+
+.adm-photo.busy {
+  opacity: .6;
+  pointer-events: none;
+}
+
+.adm-photo-img {
+  grid-row: span 2;
+  width: 220px;
+  max-width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 14px;
+  background: #f0f3ee;
+}
+
+.adm-photo-img.empty {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 6px;
+  color: #93a093;
+  font-size: 13px;
+  border: 1px dashed #cfd8cc;
+}
+
+.adm-photo-img.empty .icon {
+  width: 28px;
+  height: 28px;
+}
+
+.adm-photo-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.adm-file {
+  position: relative;
+  cursor: pointer;
+}
+
+.adm-file input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+}
+
+.adm-file:focus-within {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+/* Ingrediente: autocompletare + rânduri */
+.adm-ac {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.adm-ac .field {
+  margin-bottom: 6px;
+}
+
+.adm-ac input {
+  width: 100%;
+  border: 1px solid #dce4d8;
+  border-radius: 10px;
+  padding: 12px 13px;
+  font: inherit;
+  background: white;
+}
+
+.adm-ac-list {
+  position: absolute;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin: 4px 0 0;
+  padding: 6px;
+  list-style: none;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  box-shadow: 0 14px 34px #0c0e0c1f;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.adm-ac-list li {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.adm-ac-list li small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.adm-ac-list li[aria-selected="true"] {
+  background: #eef3ea;
+}
+
+.adm-ac-list .adm-ac-none {
+  cursor: default;
+  color: var(--muted);
+}
+
+.adm-ing-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.adm-ing {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 112px 78px 36px;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+
+.adm-ing-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  font-size: 14px;
+}
+
+.adm-ing-name small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.adm-ing-grams {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.adm-ing-grams input {
+  width: 80px;
+  border: 1px solid #dce4d8;
+  border-radius: 8px;
+  padding: 7px 8px;
+  text-align: right;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.adm-ing-kcal {
+  text-align: right;
+  font-size: 13px;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.adm-ing-empty {
+  padding: 8px 0;
+}
+
+.adm-err {
+  margin: 8px 0 0;
+  color: #a4493b;
+  font-size: 13px;
+  font-weight: 550;
+}
+
+/* Pași de preparare */
+.adm-steps {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.adm-step {
+  display: grid;
+  grid-template-columns: 22px 26px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: start;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: white;
+}
+
+.adm-step .field {
+  margin: 0;
+}
+
+.adm-step textarea {
+  min-height: 46px;
+}
+
+.adm-drag {
+  display: grid;
+  place-items: center;
+  height: 46px;
+  color: #a2ad9f;
+  cursor: grab;
+}
+
+.adm-drag .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.adm-step-num {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-top: 10px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #e8cc7c;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.adm-step-tools {
+  display: flex;
+  gap: 2px;
+  margin-top: 5px;
+}
+
+.adm-step-tools .icon-button {
+  width: 32px;
+  height: 32px;
+}
+
+.adm-step-tools .icon-button:disabled {
+  opacity: .3;
+  cursor: default;
+}
+
+.adm-step.dragging {
+  opacity: .45;
+}
+
+.adm-step.drop-before {
+  box-shadow: 0 -3px 0 #c9a84e;
+}
+
+.adm-step.drop-after {
+  box-shadow: 0 3px 0 #c9a84e;
+}
+
+/* Panou nutrițional */
+.adm-facts-kcal {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+
+.adm-facts-kcal strong {
+  font-size: 38px;
+  line-height: 1;
+  color: var(--green);
+  font-variant-numeric: tabular-nums;
+}
+
+.adm-facts-kcal span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.adm-facts-macros {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.adm-facts-macros div {
+  background: #f5f7f3;
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+
+.adm-facts-macros dt {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.adm-facts-macros dd {
+  margin: 0;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+
+.adm-facts-total {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin: 0 0 6px;
+}
+
+.adm-facts .adm-subhead {
+  margin: 14px 0 6px;
+}
+
+.adm-facts p.muted {
+  font-size: 13px;
+  margin: 0;
+}
+
+@media (max-width: 1180px) {
+  .adm-editor {
+    grid-template-columns: minmax(0, 1fr) 290px;
+  }
+  .adm-photo {
+    grid-template-columns: 1fr;
+  }
+  .adm-photo-img {
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 960px) {
+  .adm-editor {
+    grid-template-columns: 1fr;
+  }
+  .adm-editor-side {
+    position: static;
+  }
+  .adm-status-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .adm-ed-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .adm-ed-row .field:first-child {
+    grid-column: 1 / -1;
+  }
+  .adm-ing {
+    grid-template-columns: auto minmax(0, 1fr) 36px;
+    row-gap: 6px;
+  }
+  .adm-ing-name {
+    grid-column: 1 / -1;
+  }
+  .adm-ing-kcal {
+    text-align: left;
+  }
+  .adm-step {
+    grid-template-columns: 26px minmax(0, 1fr);
+  }
+  .adm-drag-hint {
+    display: none;
+  }
+  .adm-drag {
+    display: none;
+  }
+  .adm-step-tools {
+    grid-column: 2;
+    margin-top: 0;
+  }
+  .adm-thumb-cell {
+    width: auto;
+  }
+}
+
+.admin .page-heading > .btn {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .admin .page-heading {
+    flex-wrap: wrap;
+  }
+}
+
+/* ===== Detaliile unui exercițiu (aplicație + previzualizarea din panou) ===== */
+.ex-view .ex-media {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 16px;
+  background: #0c0e0c;
+  margin-bottom: 14px;
+}
+
+.ex-view .ex-sub {
+  font-size: 14px;
+  margin: 16px 0 6px;
+  color: var(--ink);
+}
+
+.ex-view .ex-steps,
+.ex-view .ex-mistakes {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.ex-view .ex-steps li,
+.ex-view .ex-mistakes li {
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.ex-view .ex-mistakes li::marker {
+  color: #a4493b;
+}
+
+.ex-view .ex-video-link {
+  margin-top: 14px;
+}
+
+.ex-view .ex-credit {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 10px 0 0;
+}
+
+/* ===== Ecranul 6: exerciții ===== */
+.adm-head-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.adm-filter-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  margin: -4px 0 14px;
+}
+
+.adm-filter-note .icon {
+  width: 16px;
+  height: 16px;
+}
+
+.notice-card .btn {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.adm-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border: 0;
+  padding: 0;
+  margin: 14px 0 0;
+}
+
+.adm-checks legend {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.adm-checks legend small {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.adm-check {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.adm-check input {
+  position: absolute;
+  opacity: 0;
+  inset: 0;
+  margin: 0;
+  cursor: pointer;
+}
+
+.adm-check span {
+  padding: 8px 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: white;
+  font-size: 13px;
+}
+
+.adm-check input:checked + span {
+  background: var(--green);
+  border-color: var(--green);
+  color: #e8cc7c;
+}
+
+.adm-check input:focus-visible + span {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.adm-ed-row.two {
+  grid-template-columns: 1fr 1fr;
+}
+
+.adm-ed-row.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.adm-step-num.warn {
+  background: #f8e9e5;
+  color: #a4493b;
+}
+
+.adm-video-prev {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 14px;
+  background: #0c0e0c;
+  margin: 12px 0 10px;
+}
+
+.adm-progress {
+  display: none;
+  height: 6px;
+  border-radius: 6px;
+  background: #e9eee6;
+  overflow: hidden;
+  margin: 8px 0;
+}
+
+.adm-progress.on {
+  display: block;
+}
+
+.adm-progress span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--green);
+  transition: width .2s;
+}
+
+/* Telefonul din previzualizare */
+.adm-phone {
+  border: 10px solid #0c0e0c;
+  border-radius: 34px;
+  background: #0c0e0c;
+  box-shadow: 0 18px 40px #0c0e0c26;
+  overflow: hidden;
+}
+
+.adm-phone-screen {
+  background: white;
+  border-radius: 24px;
+  padding: 22px 18px;
+  max-height: 560px;
+  overflow: auto;
+}
+
+.adm-phone-screen h2 {
+  font-family: Manrope;
+  font-size: 21px;
+  letter-spacing: -.4px;
+  margin: 4px 0 10px;
+}
+
+.adm-phone-screen p,
+.adm-phone-screen li {
+  color: #73806e;
+}
+
+.adm-preview .small-note {
+  margin-top: 12px;
+}
+
+/* ===== Ecranul 7: catalog nutrițional ===== */
+.adm-ro {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.adm-ro .icon {
+  width: 14px;
+  height: 14px;
+}
+
+.adm-foods .text-btn.adm-link {
+  padding: 0;
+  text-align: left;
+  font: inherit;
+  font-weight: 650;
+}
+
+#foods-results.loading {
+  opacity: .55;
+  transition: opacity .15s;
+}
+
+.adm-usage {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.adm-usage li {
+  margin-bottom: 4px;
+}
+
+.adm-details {
+  margin: 4px 0 12px;
+  font-size: 14px;
+}
+
+.adm-details summary {
+  cursor: pointer;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+#food-energy.warn {
+  color: #93652a;
+  font-weight: 600;
+}
+
+.adm-import-sum {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin: 10px 0 16px;
+}
+
+.adm-import-sum div {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f5f7f3;
+}
+
+.adm-import-sum strong {
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+
+.adm-import-sum span {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.adm-import-sum .ok strong { color: var(--green); }
+.adm-import-sum .bad { background: #f8e9e5; }
+.adm-import-sum .bad strong { color: #a4493b; }
+
+.adm-import-errors {
+  max-height: 260px;
+  overflow: auto;
+  margin-bottom: 14px;
+}
+
+/* ===== Ecranul 8: media ===== */
+.adm-drop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 26px 18px;
+  margin-bottom: 14px;
+  border: 1.5px dashed #c9d4c6;
+  border-radius: 16px;
+  background: #fbfcf9;
+  color: var(--muted);
+  text-align: center;
+  font-size: 14px;
+  position: relative;
+}
+
+.adm-drop .icon {
+  width: 26px;
+  height: 26px;
+  color: var(--green);
+}
+
+.adm-drop strong {
+  color: var(--ink);
+}
+
+.adm-drop small {
+  font-size: 12px;
+}
+
+.adm-drop.over {
+  border-color: var(--green);
+  background: #eef3ea;
+}
+
+.adm-drop.small {
+  padding: 18px;
+  margin: 12px 0;
+  cursor: pointer;
+}
+
+.adm-drop.small input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.adm-drop:focus-within {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.adm-media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.adm-media-grid.small {
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 10px;
+  max-height: 60vh;
+  overflow: auto;
+}
+
+.adm-media-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: white;
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.adm-media-card:hover {
+  border-color: #c9d4c6;
+  box-shadow: 0 6px 18px #153d3212;
+}
+
+.adm-thumb-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0c0e0c;
+}
+
+.adm-thumb-media img,
+.adm-thumb-media video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.adm-play {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: white;
+}
+
+.adm-play .icon {
+  width: 34px;
+  height: 34px;
+  padding: 8px;
+  border-radius: 50%;
+  background: #0c0e0c99;
+}
+
+.adm-media-name {
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 4px;
+}
+
+.adm-media-meta {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.adm-media-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  min-height: 0;
+}
+
+dialog:has(.adm-media-detail),
+dialog:has(.adm-media-grid),
+dialog:has(.adm-import-sum) {
+  max-width: 720px;
+}
+
+.adm-media-big {
+  display: block;
+  width: 100%;
+  max-height: 46vh;
+  object-fit: contain;
+  border-radius: 14px;
+  background: #0c0e0c;
+  margin-bottom: 14px;
+}
+
+.adm-media-detail form {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+.adm-media-detail form .field {
+  flex: 1;
+  margin: 0;
+}
+
+.adm-blocked {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.adm-blocked .icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.adm-upload-list {
+  list-style: none;
+  margin: 0 0 14px;
+  padding: 0;
+  max-height: 40vh;
+  overflow: auto;
+}
+
+.adm-upload-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.adm-upload-list li > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.adm-upload-list li > span .icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--green);
+}
+
+.adm-upload-list strong {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adm-upload-list li > span small {
+  margin-left: auto;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.adm-upload-status {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.adm-upload-status.ok { color: #5b7c3e; }
+.adm-upload-status.bad,
+.adm-upload-list li.bad .adm-upload-status { color: #a4493b; }
+
+@media (max-width: 700px) {
+  .adm-ed-row.four {
+    grid-template-columns: 1fr 1fr;
+  }
+  .adm-import-sum {
+    grid-template-columns: 1fr 1fr;
+  }
+  .adm-media-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .adm-media-detail form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .notice-card {
+    flex-wrap: wrap;
+  }
+}
+
+.adm-segment button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.adm-segment button .icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* ===== Mesajul de mentenanță (aplicație + previzualizare în panou) ===== */
+.maintenance-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  background: #e8cc7c;
+  color: #0c0e0c;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.maintenance-banner .icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.maintenance-banner.static {
+  border-radius: 12px;
+  margin-top: 6px;
+}
+
+/* ===== Ecranul 9: abonamente și evenimente de plată ===== */
+.adm-status-row.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.adm-events {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.adm-event {
+  margin: 0;
+  padding: 0;
+}
+
+.adm-event summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 16px 20px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.adm-event summary::-webkit-details-marker {
+  display: none;
+}
+
+.adm-event summary::before {
+  content: '▸';
+  color: var(--muted);
+  transition: transform .15s;
+}
+
+.adm-event[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.adm-event-type {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.adm-event-date {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.adm-event > .adm-dl,
+.adm-event > h4,
+.adm-event > pre {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.adm-json {
+  background: #0c0e0c;
+  color: #e9efe6;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  overflow: auto;
+  max-height: 360px;
+  margin-bottom: 20px;
+}
+
+.adm-error-text {
+  color: #a4493b;
+  font-weight: 600;
+}
+
+/* ===== Ecranul 10: jurnal de audit ===== */
+.adm-day {
+  margin-bottom: 22px;
+}
+
+.adm-day-label {
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: .3px;
+  color: var(--muted);
+  margin: 0 0 10px;
+}
+
+.adm-audit {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 18px;
+  border-left: 2px solid var(--line);
+  display: grid;
+  gap: 10px;
+}
+
+.adm-audit-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 14px;
+  margin: 0;
+  padding: 14px 18px;
+}
+
+.adm-audit-item::before {
+  content: '';
+  position: absolute;
+  left: -25px;
+  top: 20px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #c9a84e;
+  box-shadow: 0 0 0 3px var(--bg);
+}
+
+.adm-audit-item time {
+  font-size: 13px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  color: var(--green);
+  padding-top: 1px;
+}
+
+.adm-audit-body p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.adm-audit-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  margin-top: 4px !important;
+  font-size: 12.5px !important;
+  color: var(--muted);
+}
+
+.adm-audit-meta .icon {
+  width: 14px;
+  height: 14px;
+  margin-right: 4px;
+  vertical-align: -2px;
+}
+
+.adm-audit-reason {
+  margin-top: 4px !important;
+  font-size: 13px !important;
+  color: var(--muted);
+}
+
+.adm-diff-box {
+  margin-top: 10px;
+}
+
+.adm-diff-box summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--green);
+}
+
+.adm-diff {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.adm-diff th,
+.adm-diff td {
+  text-align: left;
+  vertical-align: top;
+  padding: 7px 10px;
+  border-top: 1px solid var(--line);
+}
+
+.adm-diff th {
+  width: 34%;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.adm-diff del,
+.adm-diff-list .del {
+  background: #fbe9e6;
+  color: #9a3b2d;
+}
+
+.adm-diff ins,
+.adm-diff-list .ins {
+  background: #e8f3df;
+  color: #3f6a24;
+  text-decoration: none;
+}
+
+.adm-diff del,
+.adm-diff ins {
+  padding: 1px 5px;
+  border-radius: 5px;
+  word-break: break-word;
+}
+
+.adm-diff-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.adm-diff-list li {
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.adm-diff-list del,
+.adm-diff-list ins {
+  background: none;
+  padding: 0;
+}
+
+/* ===== Ecranul 11: administratori și setări ===== */
+.adm-row-muted td {
+  opacity: .6;
+}
+
+.adm-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #5b7c3e;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.adm-ok .icon {
+  width: 15px;
+  height: 15px;
+}
+
+.adm-row-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.adm-role-grid {
+  display: grid;
+  gap: 8px;
+  border: 0;
+  padding: 0;
+  margin: 12px 0;
+}
+
+.adm-role-grid legend {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.adm-role-choice {
+  padding: 12px 14px;
+}
+
+.adm-role-choice strong {
+  display: inline;
+  margin: 0 0 0 6px;
+}
+
+.adm-settings .card {
+  margin-bottom: 18px;
+}
+
+.adm-switch {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.adm-switch:first-of-type {
+  border-top: 0;
+}
+
+.adm-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 44px;
+  height: 24px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.adm-switch-track {
+  position: relative;
+  flex: 0 0 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: #cfd8cc;
+  transition: background .15s;
+}
+
+.adm-switch-track::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 3px #0003;
+  transition: transform .15s;
+}
+
+.adm-switch input:checked + .adm-switch-track {
+  background: var(--green);
+}
+
+.adm-switch input:checked + .adm-switch-track::after {
+  transform: translateX(20px);
+  background: #e8cc7c;
+}
+
+.adm-switch input:focus-visible + .adm-switch-track {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+.adm-switch strong {
+  display: block;
+  font-size: 14px;
+}
+
+.adm-switch small {
+  display: block;
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.adm-switch-off {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 4px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.adm-switch-off .icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.adm-maint-preview {
+  margin-top: 6px;
+  font-size: 12.5px;
+}
+
+.adm-settings-bar {
+  position: sticky;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px #153d3218;
+  z-index: 5;
+}
+
+.adm-settings-bar #settings-status {
+  margin-right: auto;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+dialog:has(.adm-diff) {
+  max-width: 640px;
+}
+
+@media (max-width: 700px) {
+  .adm-status-row.three {
+    grid-template-columns: 1fr;
+  }
+  .adm-audit {
+    padding-left: 12px;
+  }
+  .adm-audit-item {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .adm-audit-item::before {
+    left: -19px;
+  }
+  .adm-row-buttons {
+    justify-content: flex-start;
+  }
+  .adm-diff th {
+    width: 40%;
+  }
+}
+
+.adm-table .tag {
+  white-space: nowrap;
+}

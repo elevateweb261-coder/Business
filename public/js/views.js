@@ -251,13 +251,13 @@ function weekChart(week) {
 }
 
 function scannerMini() {
-  if (isAccount()) return `
+  if (isAccount() || !appSettings.features.photoScan) return `
     <div class="scanner-mini"><div class="scan-icon">${icon('scan')}</div><div><h3>Ce ai în farfurie?</h3><p>Notează rapid ce ai mâncat.</p></div></div>
-    <div class="scan-small"><span>Scanarea foto și codul de bare vin în curând</span><button class="btn outline small" data-view="scanner">Adaugă manual</button></div>`;
+    <div class="scan-small"><span>${appSettings.features.photoScan ? 'Scanarea foto și codul de bare vin în curând' : 'Adaugă mesele manual, în câteva secunde'}</span><button class="btn outline small" data-view="scanner">Adaugă manual</button></div>`;
   const left = scansLeft();
   return `
     <div class="scanner-mini"><div class="scan-icon">${icon('scan')}</div><div><h3>Ce ai în farfurie?</h3><p>O fotografie. Un jurnal mai simplu.</p></div></div>
-    <div class="scan-small"><span>${left ? '1 scanare demo disponibilă azi' : 'Scanarea demo de azi a fost folosită'}</span><button class="btn outline small" data-view="scanner">${left ? 'Scanează o masă' : 'Adaugă manual'}</button></div>`;
+    <div class="scan-small"><span>${left ? `${scanCount(left)} demo ${left === 1 ? 'disponibilă' : 'disponibile'} azi` : 'Scanările demo de azi au fost folosite'}</span><button class="btn outline small" data-view="scanner">${left ? 'Scanează o masă' : 'Adaugă manual'}</button></div>`;
 }
 
 function dashboard() {
@@ -478,7 +478,10 @@ function journalRows(key = today()) {
 
 function scannerPage() {
   const r = ui.scanResult;
-  const modes = isAccount() ? [['manual', 'Manual'], ['barcode', 'Cod de bare'], ['foto', 'Fotografie']] : [['foto', 'Fotografie'], ['barcode', 'Cod de bare'], ['manual', 'Manual']];
+  // Scanarea foto / cod de bare poate fi oprită de echipă din setări: rămâne doar introducerea manuală.
+  const modes = !appSettings.features.photoScan ? [['manual', 'Manual']]
+    : isAccount() ? [['manual', 'Manual'], ['barcode', 'Cod de bare'], ['foto', 'Fotografie']] : [['foto', 'Fotografie'], ['barcode', 'Cod de bare'], ['manual', 'Manual']];
+  if (!modes.some(([v]) => v === ui.scanMode)) ui.scanMode = 'manual';
   return `
   ${heading('Farfuria ta, mai ușor de înțeles.', 'Fotografie, cod de bare sau introducere manuală. Tu alegi.')}
   <div class="two-col">
@@ -497,7 +500,7 @@ function scannerPage() {
     <section class="card">
       <div class="card-heading"><h3>Jurnalul de astăzi</h3><span class="tag">${format(totals().kcal)} kcal</span></div>
       ${journalRows()}
-      ${isDemo() ? `<div class="info-strip" style="margin-top:22px">${icon('scan')}${scansLeft() ? '1 scanare demo / zi.' : 'Scanarea demo de azi a fost folosită.'} Premium include încă 2 scanări.</div>` : ''}
+      ${isDemo() && appSettings.features.photoScan ? `<div class="info-strip" style="margin-top:22px">${icon('scan')}${scansLeft() ? `${scanCount(appSettings.scanLimits.free)} demo / zi.` : 'Scanările demo de azi au fost folosite.'} Premium include ${scanCount(appSettings.scanLimits.premium)} pe zi.</div>` : ''}
       <button class="btn outline full" style="margin-top:16px" data-view="abonamente">Vezi accesul Premium</button>
     </section>
   </div>`;
@@ -578,7 +581,7 @@ function progressPage() {
 
 function pricesPage() {
   const plans = [['1 lună', 'Flexibilitate, lună de lună.'], ['3 luni', 'Timp să construiești o rutină.'], ['6 luni', 'Un angajament pentru tine.']];
-  const perks = ['Plan alimentar pentru 4 săptămâni', 'Acces la toate zilele de antrenament', '3 scanări de mese pe zi', 'Jurnal alimentar și progres'];
+  const perks = ['Plan alimentar pentru 4 săptămâni', 'Acces la toate zilele de antrenament', `${scanCount(appSettings.scanLimits.premium)} de mese pe zi`, 'Jurnal alimentar și progres'];
   const sub = session.subscription;
   return `
   ${heading('Mai multă continuitate. Mai mult pentru tine.', 'Alege perioada potrivită. Acces complet la alimentație și mișcare.')}
@@ -601,7 +604,7 @@ function pricesPage() {
       <tbody>
         <tr><td>Plan alimentar</td><td>Săptămâna 1</td><td>Săptămânile 1–4</td></tr>
         <tr><td>Antrenamente</td><td>Ziua 1</td><td>Toate zilele</td></tr>
-        <tr><td>Scanner alimentar</td><td>1 scanare / zi</td><td>3 scanări / zi</td></tr>
+        <tr><td>Scanner alimentar</td><td>${scanCount(appSettings.scanLimits.free)} / zi</td><td>${scanCount(appSettings.scanLimits.premium)} / zi</td></tr>
       </tbody>
     </table></div>
   </section>

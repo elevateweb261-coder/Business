@@ -36,6 +36,12 @@ function weekDates(d = new Date()) {
   return Array.from({ length: 7 }, (_, i) => addDays(monday, i));
 }
 
+// Setările stabilite de echipă în panou (GET /api/settings); valorile implicite se folosesc fără server.
+const appSettings = { scanLimits: { free: 1, premium: 3 }, features: { aiPlans: true, photoScan: true }, maintenance: null };
+
+/** „1 scanare”, „3 scanări”, „20 de scanări”. */
+const scanCount = n => `${n} ${n === 1 ? 'scanare' : n >= 20 ? 'de scanări' : 'scanări'}`;
+
 const capitalize = s => s.charAt(0).toUpperCase() + s.slice(1);
 const longDate = (d = new Date()) => capitalize(new Intl.DateTimeFormat('ro-RO', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(d));
 const shortDate = d => new Intl.DateTimeFormat('ro-RO', { day: 'numeric', month: 'short' }).format(d);

@@ -10,6 +10,8 @@ async function boot() {
   let me = null;
   session.serverAvailable = location.protocol.startsWith('http');
   if (session.serverAvailable) {
+    try { Object.assign(appSettings, await API.get('/api/settings')); } catch { /* rămân valorile implicite */ }
+    showMaintenance();
     try {
       me = await API.get('/api/me');
     } catch (err) {
@@ -28,6 +30,18 @@ async function boot() {
     return;
   }
   navigate(hash || (session.mode === 'guest' ? 'bun-venit' : 'acasa'), { focus: false });
+}
+
+/** Mesajul de mentenanță setat de echipă (nu blochează aplicația). */
+function showMaintenance() {
+  document.getElementById('maintenance')?.remove();
+  if (!appSettings.maintenance?.message) return;
+  const el = document.createElement('div');
+  el.id = 'maintenance';
+  el.className = 'maintenance-banner';
+  el.setAttribute('role', 'status');
+  el.innerHTML = `${icon('info')}<span>${esc(appSettings.maintenance.message)}</span>`;
+  document.body.prepend(el);
 }
 
 boot();
